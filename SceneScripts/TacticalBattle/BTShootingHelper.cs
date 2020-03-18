@@ -10,7 +10,6 @@ public class BTShootingHelper{
 		wpns = new SWeaponToFire[unit.weapons.Length];
 		for(int i = 0; i<wpns.Length;i++)
 			wpns[i] = new SWeaponToFire(unit.weapons[i].ID);
-		PrintSWeapons();
 	}
 
 	public bool HasWeaponFiredFromID(int weaponID){
@@ -41,23 +40,6 @@ public class BTShootingHelper{
 		}
 
 		GlobalFuncs.PostMessage(string.Format("Firing {0},ID:{1} at {2}",wpnName,weaponID,targetName));
-	}
-
-	void PrintSWeapons(){
-		string s = "";
-		for(int i = 0;i<wpns.Length;i++){
-			foreach(GEnums.SWeapon wpn in selectedUnit.weapons){
-				if(wpn.ID == wpns[i].weaponID)
-					s += wpn.name + "," + wpn.ID;
-			}
-			if(wpns[i].targetID < 0)
-				s += " has no target ";
-			else
-				s += " shooting at " + wpns[i].targetID + " ";
-			s += (wpns[i].hasFired ? ", true":", false");
-			s += "\n";
-		}
-		Debug.Log(s);
 	}
 
 	SWeaponToFire GetSWeaponFromID(int id){

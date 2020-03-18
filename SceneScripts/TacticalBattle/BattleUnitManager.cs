@@ -282,8 +282,11 @@ public class BattleUnitManager : MonoBehaviour{
 	// 	return GRefs.btUnitDisplayManager.GetSelectedWeaponID(selectedUnit.ID);
 	// }
 
-	public void FinishShooting(){
-		Debug.Log("TODO FinishShooting");
+	public void FinishShooting(){FinishShooting(selectedUnit);}
+	public void FinishShooting(Unit unit){
+		GRefs.battleManager.FinishCurrentActingUnit();
+		mechs[ GetUnitLaneNum(unit), (GetUnitTopBot(unit)?0:1) ].GetComponent<Image>().color = Globals.UnitDisplayColors[ unit.team, 1];
+		UnselectAllUnits();
 	}
 
 	public void FireSelectedWeaponAtTarget(){

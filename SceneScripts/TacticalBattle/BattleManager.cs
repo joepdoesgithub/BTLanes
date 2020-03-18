@@ -9,15 +9,10 @@ public class BattleManager : MonoBehaviour{
 	GEnums.EBattleState battleState;
 
 	void Start(){GRefs.battleManager = this;}
-	string lastState = "";
 
     // Update is called once per frame
     void Update(){
 		battleState = Globals.GetBattleState();
-		// if(battleState.ToString() != lastState){
-		// 	Debug.Log("Update " + battleState.ToString());
-		// 	lastState = battleState.ToString();
-		// }
 
 		if(battleState == GEnums.EBattleState.AllInit)
 			return;
@@ -37,7 +32,10 @@ public class BattleManager : MonoBehaviour{
 					if(PlayerOrder[i].unit.team != 0){
 						//AI turn
 						GlobalFuncs.PostMessage("Doing AI turn for " + PlayerOrder[i].unit.unitName);
-						GRefs.battleUnitManager.FinishMove(PlayerOrder[i].unit);
+						if(battleState == GEnums.EBattleState.MovingSelectNext)
+							GRefs.battleUnitManager.FinishMove(PlayerOrder[i].unit);
+						else
+							GRefs.battleUnitManager.FinishShooting(PlayerOrder[i].unit);
 						// Globals.SetBattleState(GEnums.EBattleState.MovingSelectNext);
 						return;
 					}
