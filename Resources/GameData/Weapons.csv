@@ -1,0 +1,12 @@
+Name,WeaponFamily,Subfamily,Heat,MinRange,ShortRange,MediumRange,LongRange,Damage,RechargeTime,DmgPerMissile,MissileGroupSize
+Small Laser,Energy,,1,0,1,2,3,3,2.5,,
+Medium Laser,Energy,,3,0,3,6,9,5,5.0,,
+Large Laser,Energy,,8,0,5,10,15,8,1.0,,
+PPC,Energy,,10,3,6,12,18,10,6.0,,
+Autocannon/10,Ballistic,,3,0,5,10,15,10,5.5,,
+Machine Gun,Ballistic,,0,0,1,2,3,2,1.0,,
+LRM 15,Missile,LRM,5,6,7,14,21,0,1.0,1,5
+SRM 4,Missile,SRM,3,0,3,6,9,0,2.0,2,1
+SRM 6,Missile,SRM,4,0,3,6,9,0,1.0,2,1
+Autocannon/20,Ballistic,,7,0,3,6,9,20,1,,
+LRM 10,Missile,LRM,4,6,7,14,21,0,1.0,1,5

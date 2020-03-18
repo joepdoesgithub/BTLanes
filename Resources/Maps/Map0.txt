@@ -1,0 +1,15 @@
+[TERRAIN]
+RA,RA,RA,RA,RA
+RA,RA,MO,RA,RA
+RA,MO,MO,MO,RA
+RA,RA,MO,RA,RA
+RA,RA,RA,RA,RA
+[!TERRAIN]
+
+[EVENTS]
+EnemyBase;U;,Relic;F;
+Wreck;U;,Wreck;U;
+Wreck;U;
+
+FriendlyBase;F;
+[!EVENTS]
