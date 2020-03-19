@@ -31,6 +31,9 @@ public class TacBattleInputManager : MonoBehaviour{
 		}else if(battleState == GEnums.EBattleState.ShootingWaitingForInput){
 			if(Input.GetKeyDown(KeyCode.F)){
 				GRefs.battleUnitManager.FireSelectedWeaponAtTarget();
+			}else
+			if(Input.GetKeyDown(KeyCode.Z)){
+				GRefs.battleUnitManager.ResetShooting();
 			}
 		}
 	
