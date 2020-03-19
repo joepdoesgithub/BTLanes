@@ -21,11 +21,14 @@ public static class WeaponDataParser{
 	}
 
 	static void SetWeaponRanges(ref GEnums.SWeapon wpn){
-		wpn.ranges = new float[4];
-		wpn.ranges[0] = GetFieldF("MinRange");
-		wpn.ranges[1] = GetFieldF("ShortRange");
-		wpn.ranges[2] = GetFieldF("MediumRange");
-		wpn.ranges[3] = GetFieldF("LongRange");
+		wpn.ranges = new int[4];
+		wpn.ranges[0] = (int)(GetFieldF("MinRange")/2 +.5f);
+		wpn.ranges[1] = (int)(GetFieldF("ShortRange")/2 +.5f);
+		wpn.ranges[2] = (int)(GetFieldF("MediumRange")/2 +.5f);
+		wpn.ranges[3] = (int)(GetFieldF("LongRange")/2 +.5f);
+
+		if(wpn.ranges[1] == wpn.ranges[2])
+			wpn.ranges[1]--;
 	}
 
 	static void SetWeaponMissileStats(ref GEnums.SWeapon wpn){

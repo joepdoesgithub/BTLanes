@@ -68,9 +68,9 @@ public class BTShootingHelper{
 	//		Statics
 	//
 	////////////////////
-	public static bool IsWeaponInRange(Unit shooter, Unit target, int weaponID){
+	// public static bool IsWeaponInRange(Unit shooter, Unit target, int weaponID){
 		
-	}
+	// }
 
 	struct SWeaponToFire{
 		public int weaponID;

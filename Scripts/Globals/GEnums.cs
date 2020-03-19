@@ -28,16 +28,14 @@ public static class GEnums{
 		public EWeaponType type;
 		public float heat;
 		public EMechLocation loc;
-		public float[] ranges;
+		// public float[] ranges;
+		public int[] ranges;
 		public float damage;
 		public float rechargeTime;				// This is used to modify the time a recharge needs
 		public float dmgPerMissile;
 		public int missileGroupSize;
 
 		public int ID;
-
-		public float startReloadTime;
-		public bool ready;
 
 		public float GetDamage(){
 			if(type == EWeaponType.MissileLRM || type == EWeaponType.MissileSRM)

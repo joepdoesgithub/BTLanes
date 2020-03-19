@@ -10,6 +10,7 @@ public class BattleUnitManager : MonoBehaviour{
 	public GameObject TargetCursorPrefab;
 
 	GameObject[] lanes;
+	public GameObject[] GetLanes(){return lanes;}
 	GameObject[,] mechs;
 	public int GetLaneCount(){return lanes.Length;}
 	public SUnitInLane[] unitsInLanes;
@@ -219,7 +220,7 @@ public class BattleUnitManager : MonoBehaviour{
 	public void FinishMove(){FinishMove(selectedUnit);}
 	public void FinishMove(Unit unit){
 		// Shooting and being shot modifiers
-		Debug.LogFormat("moveRem {0} runRem {1} hasWalked {2}",moveRemaining,runRemaining,unitWalkedBackwards);
+		// Debug.LogFormat("moveRem {0} runRem {1} hasWalked {2}",moveRemaining,runRemaining,unitWalkedBackwards);
 		if(moveRemaining == unit.walkSpeed && runRemaining == unit.runSpeed)
 			unit.stationary = true;
 		else
@@ -230,7 +231,7 @@ public class BattleUnitManager : MonoBehaviour{
 		unit.toHitModifier = BTMovementHelper.GetToHitModifier(unit.stationary,unit.ran,unit.jumped);
 		unit.toBeHitModifier = BTMovementHelper.GetToBeHitModifier(unit.jumped,lanesMoved);
 
-		Debug.LogFormat("LanesMoved {0} ToHit {1} ToBeHit {2}",lanesMoved,unit.toHitModifier,unit.toBeHitModifier);
+		// Debug.LogFormat("LanesMoved {0} ToHit {1} ToBeHit {2}",lanesMoved,unit.toHitModifier,unit.toBeHitModifier);
 
 		GRefs.battleManager.FinishCurrentActingUnit();
 		mechs[ GetUnitLaneNum(unit), (GetUnitTopBot(unit)?0:1) ].GetComponent<Image>().color = Globals.UnitDisplayColors[ unit.team, 1];
@@ -331,5 +332,21 @@ public class BattleUnitManager : MonoBehaviour{
 		if(shootingHelper==null)
 			return false;
 		return shootingHelper.HasWeaponFiredFromID(weaponID);
+	}
+
+///////////////////////////////////////////////
+/////
+//					Other stuff
+/////
+///////////////////////////////////////////////
+	public void GetRangeBandInfo(out int unitID, out int weaponID,	out int selectedUnitLane, out int facing, out int[] ranges){
+		unitID = -1;weaponID = -1;selectedUnitLane = -1;facing = 0;ranges = new int[0];
+		if(selectedUnit == null)
+			return;
+		unitID = selectedUnit.ID;
+		weaponID = GRefs.btUnitDisplayManager.GetSelectedWeaponID(selectedUnit.ID);
+		selectedUnitLane = GetUnitLaneNum(selectedUnit);
+		facing = GetUnitFacing(selectedUnit);
+		ranges = GRefs.btUnitDisplayManager.GetSelectedWeaponRanges();
 	}
 }

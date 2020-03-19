@@ -208,7 +208,7 @@ public class BTUnitDisplayManager : MonoBehaviour{
 			string s = "";
 			bool highlightWpn = (wpns[i].ID == selectedWeaponID);
 			if(highlightWpn && (!enemyDisplay))
-				s+= "<b><i><size=23>";
+				s+= "<b><i>";
 			if(doColors){
 				int colorIndex = (GRefs.battleUnitManager.HasWeaponFired( wpns[i].ID )?1:0);
 				colorString = ColorUtility.ToHtmlStringRGBA(textColors[colorIndex]);
@@ -217,15 +217,15 @@ public class BTUnitDisplayManager : MonoBehaviour{
 			s += wpns[i].weapon.name.PadRight(maxLens[0] + spacing);
 			s += wpns[i].weapon.heat.ToString().PadLeft(maxLens[1] + spacing);
 			s += wpns[i].weapon.GetDamage().ToString().PadLeft(maxLens[2] + spacing);
-			s += (Roundup(wpns[i].weapon.ranges[0]/2.0)).ToString().PadLeft(maxLens[3] + spacing);
-			s += (Roundup(wpns[i].weapon.ranges[1]/2.0)).ToString().PadLeft(maxLens[4] + spacing);
-			s += (Roundup(wpns[i].weapon.ranges[2]/2.0)).ToString().PadLeft(maxLens[5] + spacing);
-			s += (Roundup(wpns[i].weapon.ranges[3]/2.0)).ToString().PadLeft(maxLens[6] + spacing);
+			s += wpns[i].weapon.ranges[0].ToString().PadLeft(maxLens[3] + spacing);
+			s += wpns[i].weapon.ranges[1].ToString().PadLeft(maxLens[4] + spacing);
+			s += wpns[i].weapon.ranges[2].ToString().PadLeft(maxLens[5] + spacing);
+			s += wpns[i].weapon.ranges[3].ToString().PadLeft(maxLens[6] + spacing);
 			s += wpns[i].weapon.loc.ToString().PadLeft(maxLens[7]+spacing);
 			if(doColors)
 				s+="</color>";
 			if(highlightWpn && (!enemyDisplay))
-				s+= "</size></i></b>";
+				s+= "</i></b>";
 			ss[i+1] = s;
 		}
 
@@ -285,6 +285,13 @@ public class BTUnitDisplayManager : MonoBehaviour{
 		if(dispUnitLeft.ID != unitID)
 			return -1;
 		return selectedWeaponID;
+	}
+	public int[] GetSelectedWeaponRanges(){
+		foreach(SWeaponLineWithID w in leftWeapons){
+			if(w.ID == selectedWeaponID)
+				return w.weapon.ranges;
+		}
+		return new int[0];
 	}
 
 	public void TabWeapon(){

@@ -14,7 +14,6 @@ public static class WeaponsHelper{
 
 			// Parse this weapon an get the data from the wpn database
 			wpns[i-1] = GetWeaponFromString(wpnStringFromUnitData);
-			wpns[i-1].startReloadTime = 0.0f;
 
 			// Finally, get location of weapon
 			wpns[i-1].loc = DMekHeaderStringToLok[ wpnStringFromUnitData.Split(',')[1].Trim() ];
@@ -68,19 +67,6 @@ public static class WeaponsHelper{
 		}
 		return "";
 	}
-
-	// public static void PrintWeapon(Globals.SWeapon wpn){
-	// 	string s = wpn.name;
-	// 	s += "," + wpn.type;
-	// 	s += ",[" + string.Format("{0}/{1}/{2}/{3}]",wpn.ranges[0],wpn.ranges[1],wpn.ranges[2],wpn.ranges[3]);
-	// 	// s += "," + wpn.type;
-	// 	// s += "," + wpn.type;
-	// 	// s += "," + wpn.type;
-	// 	// s += "," + wpn.type;
-	// 	// s += "," + wpn.type;
-	// 	// s += "," + wpn.type;
-	// 	Debug.Log(s);
-	// }
 
 	static Dictionary<GEnums.EMechLocation,string> DMekLokToHeaderString = new Dictionary<GEnums.EMechLocation, string>{
 			{GEnums.EMechLocation.LA,"Left Arm:"},
