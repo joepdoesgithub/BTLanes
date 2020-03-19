@@ -166,7 +166,7 @@ public class BTUnitDisplayManager : MonoBehaviour{
 	string[] GetWeaponsInStringTable(SWeaponLineWithID[] wpns, int selectedWeaponID = -1, bool enemyDisplay = true){
 		string[] ss = new string[wpns.Length + 1];
 
-		string header = "Name,HT,DMG,MnR,ShR,MdR,LnR,Loc";
+		string header = "Name,HT,DMG,Ranges,Loc";
 			
 		/////
 		// Finding the correct padding
@@ -174,22 +174,20 @@ public class BTUnitDisplayManager : MonoBehaviour{
 		int[] maxLens = new int[header.Split(',').Length];
 		for(int i = 0;i<maxLens.Length;i++){maxLens[i]=0;}
 		foreach(SWeaponLineWithID w in wpns){
+			string rangeS = "(";
+			rangeS += (w.weapon.ranges[0] <= 0 ? "-" : w.weapon.ranges[0].ToString());
+			rangeS += string.Format("/{0}/{1}/{2})",w.weapon.ranges[1],w.weapon.ranges[2],w.weapon.ranges[3]);
+
 			if(w.weapon.name.Length > maxLens[0])
 				maxLens[0] = w.weapon.name.Length;
 			if(w.weapon.heat.ToString().Length > maxLens[1])
 				maxLens[1] = w.weapon.heat.ToString().Length;
 			if(w.weapon.GetDamage().ToString().Length > maxLens[2])
 				maxLens[2] = w.weapon.GetDamage().ToString().Length;
-			if(w.weapon.ranges[0].ToString().Length > maxLens[3])
-				maxLens[3] = w.weapon.ranges[0].ToString().Length;
-			if(w.weapon.ranges[1].ToString().Length > maxLens[4])
-				maxLens[4] = w.weapon.ranges[1].ToString().Length;
-			if(w.weapon.ranges[2].ToString().Length > maxLens[5])
-				maxLens[5] = w.weapon.ranges[2].ToString().Length;
-			if(w.weapon.ranges[3].ToString().Length > maxLens[6])
-				maxLens[6] = w.weapon.ranges[3].ToString().Length;
-			if(w.weapon.loc.ToString().Length > maxLens[7])
-				maxLens[7] = w.weapon.loc.ToString().Length;
+			if(rangeS.Length > maxLens[3])
+				maxLens[3] = rangeS.Length;
+			if(w.weapon.loc.ToString().Length > maxLens[4])
+				maxLens[4] = w.weapon.loc.ToString().Length;
 		}
 		for(int i = 0;i<header.Split(',').Length;i++){
 			if(header.Split(',')[i].Length > maxLens[i])
@@ -217,11 +215,11 @@ public class BTUnitDisplayManager : MonoBehaviour{
 			s += wpns[i].weapon.name.PadRight(maxLens[0] + spacing);
 			s += wpns[i].weapon.heat.ToString().PadLeft(maxLens[1] + spacing);
 			s += wpns[i].weapon.GetDamage().ToString().PadLeft(maxLens[2] + spacing);
-			s += wpns[i].weapon.ranges[0].ToString().PadLeft(maxLens[3] + spacing);
-			s += wpns[i].weapon.ranges[1].ToString().PadLeft(maxLens[4] + spacing);
-			s += wpns[i].weapon.ranges[2].ToString().PadLeft(maxLens[5] + spacing);
-			s += wpns[i].weapon.ranges[3].ToString().PadLeft(maxLens[6] + spacing);
-			s += wpns[i].weapon.loc.ToString().PadLeft(maxLens[7]+spacing);
+			string rangeS = "(";
+			rangeS += (wpns[i].weapon.ranges[0] <= 0 ? "-" : wpns[i].weapon.ranges[0].ToString());
+			rangeS += string.Format("/{0}/{1}/{2})",wpns[i].weapon.ranges[1],wpns[i].weapon.ranges[2],wpns[i].weapon.ranges[3]);
+			s += rangeS.PadLeft(maxLens[3] + spacing);
+			s += wpns[i].weapon.loc.ToString().PadLeft(maxLens[4]+spacing);
 			if(doColors)
 				s+="</color>";
 			if(highlightWpn && (!enemyDisplay))
