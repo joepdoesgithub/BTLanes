@@ -22,6 +22,9 @@ public class TacBattleInputManager : MonoBehaviour{
 			if(Input.GetKeyDown(KeyCode.Q)){
 				GRefs.battleUnitManager.TurnUnitLeft();
 			}else
+			if(Input.GetKeyDown(KeyCode.Z)){
+				GRefs.battleUnitManager.ResetUnit();
+			}else
 			if(Input.GetKeyDown(KeyCode.E)){
 				GRefs.battleUnitManager.TurnUnitRight();
 			}
@@ -31,9 +34,6 @@ public class TacBattleInputManager : MonoBehaviour{
 			}
 		}
 	
-		if(Input.GetKeyDown(KeyCode.Z)){
-			GRefs.battleUnitManager.ResetUnit();
-		}else
 		if(Input.GetKeyDown(KeyCode.Return)){
 			if(battleState == GEnums.EBattleState.MovingWaitingForInput){
 				GRefs.battleUnitManager.FinishMove();

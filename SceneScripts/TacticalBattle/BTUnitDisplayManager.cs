@@ -88,10 +88,17 @@ public class BTUnitDisplayManager : MonoBehaviour{
 		if(mvmnt){
 			int i = GRefs.battleUnitManager.GetMoveRemaining();
 			s += string.Format("\tRem: {0}", (i<0?0:i) );
+			s += string.Format("\tToHit: {0}",BTMovementHelper.GetToHitModifier(
+						(GRefs.battleUnitManager.lanesMoved==0),
+						(GRefs.battleUnitManager.GetMoveRemaining()>=0?false:true),  
+						GRefs.battleUnitManager.unitJumped ));
 		}
 		s += string.Format("\nRN: {0}",dispUnitLeft.runSpeed);
-		if(mvmnt)
+		if(mvmnt){
 			s += string.Format("\tRem: {0}",GRefs.battleUnitManager.GetRunRemaining());
+			s += string.Format("\tToBeHit: {0}",BTMovementHelper.GetToBeHitModifier(
+						GRefs.battleUnitManager.unitJumped,GRefs.battleUnitManager.lanesMoved));
+		}
 		s += string.Format("\nHt: {0}\n\n",dispUnitLeft.heat);
 		// [TODO]: show heatsinking
 

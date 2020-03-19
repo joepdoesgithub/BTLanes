@@ -58,8 +58,10 @@ public static class UnitsLoader{
 
 	static int GetRunSpeed(int originalWalkSpeed){
 		int[] spd = {0,1,2,3,4,4,5,5,6,6,7,8};
-		if(originalWalkSpeed < 0 || originalWalkSpeed >= spd.Length)
+		if(originalWalkSpeed < 0)
 			return 0;
+		if(originalWalkSpeed >= spd.Length)
+			return spd[ spd.Length - 1 ];
 		return spd[originalWalkSpeed];
 	}
 

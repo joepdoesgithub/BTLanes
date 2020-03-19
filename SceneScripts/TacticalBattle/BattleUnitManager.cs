@@ -15,7 +15,7 @@ public class BattleUnitManager : MonoBehaviour{
 	public SUnitInLane[] unitsInLanes;
 
 	Unit selectedUnit;
-	public bool unitWalkedBackwards;
+	public int lanesMoved;
 
 	BTShootingHelper shootingHelper;
 
@@ -32,6 +32,9 @@ public class BattleUnitManager : MonoBehaviour{
 
 	int moveOriginalLaneNum = 0, moveOriginalFacing = 0;
 	int moveRemaining, runRemaining;
+	public bool unitStationary;
+	public bool unitWalkedBackwards;
+	public bool unitJumped;
 	public int GetMoveRemaining(){return moveRemaining;}
 	public int GetRunRemaining(){return runRemaining;}
 
@@ -172,14 +175,26 @@ public class BattleUnitManager : MonoBehaviour{
 
 		moveRemaining = selectedUnit.walkSpeed;
 		runRemaining = selectedUnit.runSpeed;
+		unitStationary = false;
 		unitWalkedBackwards = false;
+		unitJumped = false;
+		lanesMoved = 0;
 		PlaceUnitInNewLane(selectedUnit.ID,moveOriginalLaneNum,moveOriginalFacing,false);
 	}
 
-	public void NextPhase(){
+	public void NextPhase(GEnums.EBattleState battleState){
 		foreach(SUnitInLane s in unitsInLanes)
 			mechs[ GetUnitLaneNum(s.unit), (GetUnitTopBot(s.unit)?0:1) ].GetComponent<Image>().color = Globals.UnitDisplayColors[ s.unit.team, 0];
 		UnselectAllUnits();
+		if(battleState == GEnums.EBattleState.MovingInit){
+			for(int i = 0;i<unitsInLanes.Length;i++){
+				unitsInLanes[i].unit.stationary = false;
+				unitsInLanes[i].unit.ran = false;
+				unitsInLanes[i].unit.jumped = false;
+				unitsInLanes[i].unit.toHitModifier = 0;
+				unitsInLanes[i].unit.toBeHitModifier = 0;
+			}
+		}
 	}
 
 	void Update(){
@@ -204,6 +219,18 @@ public class BattleUnitManager : MonoBehaviour{
 	public void FinishMove(){FinishMove(selectedUnit);}
 	public void FinishMove(Unit unit){
 		// Shooting and being shot modifiers
+		Debug.LogFormat("moveRem {0} runRem {1} hasWalked {2}",moveRemaining,runRemaining,unitWalkedBackwards);
+		if(moveRemaining == unit.walkSpeed && runRemaining == unit.runSpeed)
+			unit.stationary = true;
+		else
+			unit.stationary = false;
+		unitStationary = unit.stationary;
+		unit.ran = (moveRemaining >= 0 ? false : true);
+		unit.jumped = unitJumped;
+		unit.toHitModifier = BTMovementHelper.GetToHitModifier(unit.stationary,unit.ran,unit.jumped);
+		unit.toBeHitModifier = BTMovementHelper.GetToBeHitModifier(unit.jumped,lanesMoved);
+
+		Debug.LogFormat("LanesMoved {0} ToHit {1} ToBeHit {2}",lanesMoved,unit.toHitModifier,unit.toBeHitModifier);
 
 		GRefs.battleManager.FinishCurrentActingUnit();
 		mechs[ GetUnitLaneNum(unit), (GetUnitTopBot(unit)?0:1) ].GetComponent<Image>().color = Globals.UnitDisplayColors[ unit.team, 1];
@@ -219,11 +246,13 @@ public class BattleUnitManager : MonoBehaviour{
 				GRefs.btUnitDisplayManager.SelectFriendlyMech(unitsInLanes[i].unit);
 
 				selectedUnit = unitsInLanes[i].unit;
+				lanesMoved = 0;
 
 				if(Globals.GetBattleState().ToString().Contains("Moving")){
 					moveOriginalLaneNum = unitsInLanes[i].laneNum;
 					moveOriginalFacing = unitsInLanes[i].facing;
 					unitWalkedBackwards = false;
+					unitJumped = false;
 					moveRemaining = selectedUnit.walkSpeed;
 					runRemaining = selectedUnit.runSpeed;
 				}else if(Globals.GetBattleState().ToString().Contains("Shooting"))

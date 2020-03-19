@@ -100,6 +100,7 @@ public class BTMovementHelper{
 			runRemaining = 0;
 		
 		newLane = laneAvailable;
+		GRefs.battleUnitManager.lanesMoved++;
 	}
 
 	public static int GetNumUnitsInLane(int lane){
@@ -113,12 +114,30 @@ public class BTMovementHelper{
 		return cnt;
 	}
 
-	// public static int GetLaneNumberOfUnit(Unit unit){
-	// 	for(int i =0;i < GRefs.battleUnitManager.unitsInLanes.Length;i++){
-	// 		if(GRefs.battleUnitManager.unitsInLanes[i].unit.ID == unit.ID)
-	// 			return i;
-	// 	}
-	// 	Debug.LogError("BTMovementHelper.MoveUnit: Unit not found in a lane");
-	// 	return -1;
-	// }
+	public static int GetToHitModifier(bool unitStationary, bool unitRan, bool unitJumped){
+		if(unitStationary)
+			return 0;
+		if(unitRan)
+			return 2;
+		if(unitJumped)
+			return 3;
+		return 1;
+	}
+
+	public static int GetToBeHitModifier(bool unitJumped, int lanesMoved){
+		int[,] table = {
+			{0, 1, 0},
+			{2, 2, 1},
+			{3, 3, 2},
+			{4, 5, 3},
+			{6, 8, 4},
+			{9, 12, 5},
+			{13, int.MaxValue, 6} };
+		int ret = (unitJumped? 1: 0);
+		for(int i = 0;i<table.GetLength(0);i++){
+			if(lanesMoved >= table[i,0] && lanesMoved <= table[i,1])
+				return ret + table[i,2];
+		}
+		return ret;
+	}
 }

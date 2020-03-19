@@ -16,6 +16,12 @@ public class Unit{
 	public int team;
 	public int ID;
 
+	public bool stationary;
+	public bool ran;
+	public bool jumped;
+	public int toHitModifier;
+	public int toBeHitModifier;
+
 	public Dictionary<GEnums.EMechLocation,int> DStructucePoints;
 	public Dictionary<GEnums.EMechLocation,int> DArmourPoints;
 

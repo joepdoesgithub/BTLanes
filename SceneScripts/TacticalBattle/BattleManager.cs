@@ -18,8 +18,8 @@ public class BattleManager : MonoBehaviour{
 			return;
         else if(battleState == GEnums.EBattleState.MovingInit){
 			InitPhase(1);
+			GRefs.battleUnitManager.NextPhase(battleState);
 			Globals.SetBattleState(GEnums.EBattleState.MovingSelectNext);
-			GRefs.battleUnitManager.NextPhase();
 		}else if(battleState == GEnums.EBattleState.MovingSelectNext ||
 					battleState == GEnums.EBattleState.ShootingSelectNext){
 			bool done = true;
@@ -57,7 +57,7 @@ public class BattleManager : MonoBehaviour{
 		}else if(battleState == GEnums.EBattleState.ShootingInit){
 			InitPhase(-1);
 			Globals.SetBattleState(GEnums.EBattleState.ShootingSelectNext);
-			GRefs.battleUnitManager.NextPhase();
+			GRefs.battleUnitManager.NextPhase(battleState);
 		}
     }
 
