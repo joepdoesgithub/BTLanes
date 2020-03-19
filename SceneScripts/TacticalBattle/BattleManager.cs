@@ -11,8 +11,12 @@ public class BattleManager : MonoBehaviour{
 	void Start(){GRefs.battleManager = this;}
 
     // Update is called once per frame
+	bool movingSelectNext;
+	bool shootingSelectNext;
     void Update(){
 		battleState = Globals.GetBattleState();
+		movingSelectNext = (battleState == GEnums.EBattleState.MovingSelectNext);
+		shootingSelectNext = (battleState == GEnums.EBattleState.ShootingSelectNext);
 
 		if(battleState == GEnums.EBattleState.AllInit)
 			return;
@@ -20,8 +24,7 @@ public class BattleManager : MonoBehaviour{
 			InitPhase(1);
 			GRefs.battleUnitManager.NextPhase(battleState);
 			Globals.SetBattleState(GEnums.EBattleState.MovingSelectNext);
-		}else if(battleState == GEnums.EBattleState.MovingSelectNext ||
-					battleState == GEnums.EBattleState.ShootingSelectNext){
+		}else if(movingSelectNext || shootingSelectNext){
 			bool done = true;
 			for(int i = 0;i<PlayerOrder.Length;i++){
 				if(PlayerOrder[i].hasActed == false){
@@ -31,17 +34,17 @@ public class BattleManager : MonoBehaviour{
 					GRefs.battleUnitManager.SelectMech(PlayerOrder[i].unit);
 					if(PlayerOrder[i].unit.team != 0){
 						//AI turn
-						GlobalFuncs.PostMessage("Doing AI turn for " + PlayerOrder[i].unit.unitName);
-						if(battleState == GEnums.EBattleState.MovingSelectNext)
+						GlobalFuncs.PostMessage(string.Format("Doing AI {0} turn for " + PlayerOrder[i].unit.unitName, (movingSelectNext?"moving":"shooting") ));
+						if(movingSelectNext)
 							GRefs.battleUnitManager.FinishMove(PlayerOrder[i].unit);
 						else
 							GRefs.battleUnitManager.FinishShooting(PlayerOrder[i].unit);
 						// Globals.SetBattleState(GEnums.EBattleState.MovingSelectNext);
 						return;
 					}
-					if(battleState == GEnums.EBattleState.MovingSelectNext)
+					if(movingSelectNext)
 						Globals.SetBattleState(GEnums.EBattleState.MovingWaitingForInput);
-					else if(battleState == GEnums.EBattleState.ShootingSelectNext)
+					else if(shootingSelectNext)
 						Globals.SetBattleState(GEnums.EBattleState.ShootingWaitingForInput);
 					return;
 				}
@@ -49,10 +52,10 @@ public class BattleManager : MonoBehaviour{
 			if(done){
 				GRefs.battleUnitManager.UnselectAllUnits();
 				GRefs.btUnitDisplayManager.ResetSelections(true,true);
-				if (battleState != GEnums.EBattleState.MovingSelectNext)
-					Globals.SetBattleState(GEnums.EBattleState.PhysicalInit);
-				else
+				if (movingSelectNext)
 					Globals.SetBattleState(GEnums.EBattleState.ShootingInit);
+				else if (shootingSelectNext)
+					Globals.SetBattleState(GEnums.EBattleState.PhysicalInit);
 			}
 		}else if(battleState == GEnums.EBattleState.ShootingInit){
 			InitPhase(-1);

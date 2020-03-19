@@ -64,28 +64,20 @@ public class BTRangeBandManager : MonoBehaviour{
 
 		unitID = newUnitID;weaponID = newWeaponID;lane = newLane;facing = newFacing;
 
-		// // MinRange
-		// if(ranges[0] > 0){
-		// 	laneI = lane + (facing<0?-1:1) * ranges[0];
-		// 	if(laneI >= 0 && laneI < lanes.Length){
-		// 		GameObject o = Instantiate(RangebandPrefab);
-		// 		o.GetComponent<Image>().sprite = MinRangeSprite;
-		// 		laneI = lane + (facing<0?-1:1) * ranges[0];
-		// 		o.transform.SetParent(lanes[laneI].transform);
-		// 		o.transform.localPosition = new Vector3(0,0,0);
-		// 		o.transform.position = new Vector3(0,0,0);
-		// 		o.transform.localPosition += new Vector3(61f,-105f,0);
-		// 		o.transform.position += new Vector3(61f,-105f,0);
-		// 		newBands.Add(o);
-		// 	}
-		// }
-		
+		// MinRange
+		if(ranges[0] > 0 && ranges[0] != ranges[1]){
+			laneI = lane + (facing<0?-1:1) * ranges[0];
+			if(facing < 0){
+				bandsLeft[laneI].SetActive(true);
+				bandsLeft[laneI].GetComponent<Image>().sprite = MinRangeSprite;
+			}else{
+				bandsRight[laneI].SetActive(true);
+				bandsRight[laneI].GetComponent<Image>().sprite = MinRangeSprite;
+			}
+		}
+
 		// ShortRange
 		laneI = lane + (facing<0?-1:1) * ranges[1];
-		// Debug.LogFormat("Min {0} S {1} M {2} L {3}\n"+
-		// 				"MyLane {4} LaneI {5}",
-		// 				ranges[0],ranges[1],ranges[2],ranges[3],
-		// 				lane,laneI);
 		if(laneI >= 0 && laneI < bandsRight.Length){
 			if(facing < 0){
 				bandsLeft[laneI].SetActive(true);
@@ -93,6 +85,28 @@ public class BTRangeBandManager : MonoBehaviour{
 			}else{
 				bandsRight[laneI].SetActive(true);
 				bandsRight[laneI].GetComponent<Image>().sprite = ShortRangeSprite;
+			}
+		}
+		// MediumRange
+		laneI = lane + (facing<0?-1:1) * ranges[2];
+		if(laneI >= 0 && laneI < bandsRight.Length){
+			if(facing < 0){
+				bandsLeft[laneI].SetActive(true);
+				bandsLeft[laneI].GetComponent<Image>().sprite = MediumRangeSprite;
+			}else{
+				bandsRight[laneI].SetActive(true);
+				bandsRight[laneI].GetComponent<Image>().sprite = MediumRangeSprite;
+			}
+		}
+		// LongRange
+		laneI = lane + (facing<0?-1:1) * ranges[3];
+		if(laneI >= 0 && laneI < bandsRight.Length){
+			if(facing < 0){
+				bandsLeft[laneI].SetActive(true);
+				bandsLeft[laneI].GetComponent<Image>().sprite = LongRangeSprite;
+			}else{
+				bandsRight[laneI].SetActive(true);
+				bandsRight[laneI].GetComponent<Image>().sprite = LongRangeSprite;
 			}
 		}
     }
