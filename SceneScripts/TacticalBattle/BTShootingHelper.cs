@@ -63,6 +63,15 @@ public class BTShootingHelper{
 		return -1;
 	}
 
+	////////////////////
+	//
+	//		Statics
+	//
+	////////////////////
+	public static bool IsWeaponInRange(Unit shooter, Unit target, int weaponID){
+		
+	}
+
 	struct SWeaponToFire{
 		public int weaponID;
 		public int targetID;
