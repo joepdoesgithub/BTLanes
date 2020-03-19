@@ -12,6 +12,12 @@ public class BTShootingHelper{
 			wpns[i] = new SWeaponToFire(unit.weapons[i].ID);
 	}
 
+	public void Reset(){
+		wpns = new SWeaponToFire[selectedUnit.weapons.Length];
+		for(int i = 0; i<wpns.Length;i++)
+			wpns[i] = new SWeaponToFire(selectedUnit.weapons[i].ID);
+	}
+
 	public bool HasWeaponFiredFromID(int weaponID){
 		if(selectedUnit==null || wpns == null)
 			return false;

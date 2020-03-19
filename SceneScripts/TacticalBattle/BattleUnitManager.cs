@@ -307,11 +307,7 @@ public class BattleUnitManager : MonoBehaviour{
 //					Shooting stuff
 /////
 ///////////////////////////////////////////////
-	// public int GetSelectedWeaponID(){
-	// 	if(selectedUnit == null)
-	// 		return -1;
-	// 	return GRefs.btUnitDisplayManager.GetSelectedWeaponID(selectedUnit.ID);
-	// }
+	public void ResetShooting(){shootingHelper.Reset();}
 
 	public void FinishShooting(){FinishShooting(selectedUnit);}
 	public void FinishShooting(Unit unit){
