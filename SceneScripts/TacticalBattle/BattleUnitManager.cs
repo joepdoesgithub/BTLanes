@@ -203,6 +203,8 @@ public class BattleUnitManager : MonoBehaviour{
 	}
 	public void FinishMove(){FinishMove(selectedUnit);}
 	public void FinishMove(Unit unit){
+		// Shooting and being shot modifiers
+
 		GRefs.battleManager.FinishCurrentActingUnit();
 		mechs[ GetUnitLaneNum(unit), (GetUnitTopBot(unit)?0:1) ].GetComponent<Image>().color = Globals.UnitDisplayColors[ unit.team, 1];
 		UnselectAllUnits();

@@ -13,6 +13,8 @@ public class BTUnitDisplayManager : MonoBehaviour{
 	SWeaponLineWithID[] rightWeapons;
 	public int GetTargetedUnitID(){return (dispUnitRight==null ? -1: dispUnitRight.ID);}
 
+	static Color32[] textColors = {new Color32(255,255,255,255), new Color32(34,250,0,255)};
+
 	int selectedWeaponID;
 
     // Start is called before the first frame update
@@ -199,10 +201,10 @@ public class BTUnitDisplayManager : MonoBehaviour{
 			string s = "";
 			bool highlightWpn = (wpns[i].ID == selectedWeaponID);
 			if(highlightWpn && (!enemyDisplay))
-				s+= "<b><i>";
+				s+= "<b><i><size=23>";
 			if(doColors){
 				int colorIndex = (GRefs.battleUnitManager.HasWeaponFired( wpns[i].ID )?1:0);
-				colorString = ColorUtility.ToHtmlStringRGBA(Globals.UnitDisplayColors[0,colorIndex]);
+				colorString = ColorUtility.ToHtmlStringRGBA(textColors[colorIndex]);
 				s+="<color=#" + colorString + ">";
 			}
 			s += wpns[i].weapon.name.PadRight(maxLens[0] + spacing);
@@ -216,7 +218,7 @@ public class BTUnitDisplayManager : MonoBehaviour{
 			if(doColors)
 				s+="</color>";
 			if(highlightWpn && (!enemyDisplay))
-				s+= "</i></b>";
+				s+= "</size></i></b>";
 			ss[i+1] = s;
 		}
 
