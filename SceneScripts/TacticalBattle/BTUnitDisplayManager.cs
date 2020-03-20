@@ -274,11 +274,11 @@ public class BTUnitDisplayManager : MonoBehaviour{
 	}
 
 	string GetNewHeatString(int originalHeat, int heatSinking){
-		string hexColorString = ColorUtility.ToHtmlStringRGBA(new Color32(188,49,33,255));
+		string hexColorString = "#ff0000ff";
 		string s = "";
 		bool originalTooHot = (originalHeat > heatSinking);
 
-		s += (originalTooHot ? "<color=#" + hexColorString + ">" : "");
+		s += (originalTooHot ? "<color=" + hexColorString + ">" : "");
 		s += originalHeat.ToString();
 		s += (originalTooHot ? "</color>" : "");
 
@@ -295,7 +295,7 @@ public class BTUnitDisplayManager : MonoBehaviour{
 		
 		bool newTooHot = (ht > heatSinking);
 		s += (ht == dispUnitLeft.heat? "" : ">");
-		s += (newTooHot ? "<color=#" + hexColorString + ">" : "");
+		s += (newTooHot ? "<color=" + hexColorString + ">" : "");
 		s += (ht == dispUnitLeft.heat? "": ht.ToString());
 		s += (newTooHot ? "</color>" : "");
 		
