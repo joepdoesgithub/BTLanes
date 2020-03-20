@@ -38,16 +38,16 @@ public class BTShootingHelper{
 		wpns[wpnIndex].hasFired = true;
 		wpns[wpnIndex].targetID = targetID;
 
-		string targetName = GLancesAndUnits.GetUnit(targetID).unitName;
-		string wpnName = "";
+		// string targetName = GLancesAndUnits.GetUnit(targetID).unitName;
+		// string wpnName = "";
 		foreach(GEnums.SWeapon w in selectedUnit.weapons){
 			if(w.ID == weaponID){
-				wpnName = w.name;
+				// wpnName = w.name;
 				GRefs.battleUnitManager.heat += (int)w.heat;
 			}
 		}
 
-		GlobalFuncs.PostMessage(string.Format("Firing {0},ID:{1} at {2}",wpnName,weaponID,targetName));
+		// GlobalFuncs.PostMessage(string.Format("Firing {0},ID:{1} at {2}",wpnName,weaponID,targetName));
 	}
 
 	SWeaponToFire GetSWeaponFromID(int id){

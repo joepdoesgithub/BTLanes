@@ -339,6 +339,16 @@ public class BattleUnitManager : MonoBehaviour{
 		}
 		return 0;
 	}
+	
+	public int GetSelectedUnitLaneNum(){return GetUnitLaneNum(selectedUnit);}
+	public int GetSelectedEnemyLaneNum(){
+		int id = GRefs.btUnitDisplayManager.GetTargetedUnitID();
+		foreach(SUnitInLane u in unitsInLanes){
+			if(u.unit.ID == id)
+				return u.laneNum;
+		}
+		return -1;
+	}
 	int GetUnitLaneNum(Unit unit){
 		foreach(SUnitInLane u in unitsInLanes){
 			if(u.unit.ID == unit.ID)

@@ -8332,6 +8332,7 @@ GameObject:
   - component: {fileID: 2017060216}
   - component: {fileID: 2017060218}
   - component: {fileID: 2017060217}
+  - component: {fileID: 2017060219}
   m_Layer: 5
   m_Name: CombatPreview
   m_TagString: Untagged
@@ -8395,6 +8396,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2017060215}
   m_CullTransparentMesh: 0
+--- !u!114 &2017060219
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2017060215}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acd44fc9cdfc04773a6af1fe64c7fc13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: {fileID: 1553684900}
 --- !u!1 &2049407609
 GameObject:
   m_ObjectHideFlags: 0
