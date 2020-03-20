@@ -12,6 +12,7 @@ public class BTUnitDisplayManager : MonoBehaviour{
 	Unit dispUnitRight = null;
 	SWeaponLineWithID[] rightWeapons;
 	public int GetTargetedUnitID(){return (dispUnitRight==null ? -1: dispUnitRight.ID);}
+	public Unit GetSelectedEnemy(){return dispUnitRight;}
 
 	static Color32[] textColors = {new Color32(255,255,255,255), new Color32(34,250,0,255)};
 
@@ -274,11 +275,11 @@ public class BTUnitDisplayManager : MonoBehaviour{
 	}
 
 	string GetNewHeatString(int originalHeat, int heatSinking){
-		string hexColorString = ColorUtility.ToHtmlStringRGBA(new Color32(188,49,33,255));
+		string hexColorString = "#ff0000ff";
 		string s = "";
 		bool originalTooHot = (originalHeat > heatSinking);
 
-		s += (originalTooHot ? "<color=#" + hexColorString + ">" : "");
+		s += (originalTooHot ? "<color=" + hexColorString + ">" : "");
 		s += originalHeat.ToString();
 		s += (originalTooHot ? "</color>" : "");
 
@@ -295,7 +296,7 @@ public class BTUnitDisplayManager : MonoBehaviour{
 		
 		bool newTooHot = (ht > heatSinking);
 		s += (ht == dispUnitLeft.heat? "" : ">");
-		s += (newTooHot ? "<color=#" + hexColorString + ">" : "");
+		s += (newTooHot ? "<color=" + hexColorString + ">" : "");
 		s += (ht == dispUnitLeft.heat? "": ht.ToString());
 		s += (newTooHot ? "</color>" : "");
 		
@@ -313,12 +314,14 @@ public class BTUnitDisplayManager : MonoBehaviour{
 			return -1;
 		return selectedWeaponID;
 	}
-	public int[] GetSelectedWeaponRanges(){
+	public GEnums.SWeapon GetSelectedWeapon(){
+		if(dispUnitLeft == null)
+			return new GEnums.SWeapon();
 		foreach(SWeaponLineWithID w in leftWeapons){
 			if(w.ID == selectedWeaponID)
-				return w.weapon.ranges;
+				return w.weapon;
 		}
-		return new int[0];
+		return new GEnums.SWeapon();
 	}
 
 	public void TabWeapon(){

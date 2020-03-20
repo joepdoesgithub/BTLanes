@@ -23,6 +23,7 @@ public static class WeaponDataParser{
 	static void SetWeaponRanges(ref GEnums.SWeapon wpn){
 		wpn.ranges = new int[4];
 		wpn.ranges[0] = (int)(GetFieldF("MinRange")/2 +.5f);
+		wpn.ranges[0] = (wpn.ranges[0] <= 0? -1 : wpn.ranges[0]);
 		wpn.ranges[1] = (int)(GetFieldF("ShortRange")/2 +.5f);
 		wpn.ranges[2] = (int)(GetFieldF("MediumRange")/2 +.5f);
 		wpn.ranges[3] = (int)(GetFieldF("LongRange")/2 +.5f);

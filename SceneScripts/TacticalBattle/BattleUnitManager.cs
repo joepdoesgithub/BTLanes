@@ -16,6 +16,7 @@ public class BattleUnitManager : MonoBehaviour{
 	public SUnitInLane[] unitsInLanes;
 
 	Unit selectedUnit;
+	public Unit GetSelectedUnit(){return selectedUnit;}
 	public int lanesMoved;
 
 	BTShootingHelper shootingHelper;
@@ -329,7 +330,7 @@ public class BattleUnitManager : MonoBehaviour{
 		weaponID = GRefs.btUnitDisplayManager.GetSelectedWeaponID(selectedUnit.ID);
 		selectedUnitLane = GetUnitLaneNum(selectedUnit);
 		facing = GetUnitFacing(selectedUnit);
-		ranges = GRefs.btUnitDisplayManager.GetSelectedWeaponRanges();
+		ranges = GRefs.btUnitDisplayManager.GetSelectedWeapon().ranges;
 	}
 
 	int GetUnitFacing(Unit unit){
@@ -339,7 +340,19 @@ public class BattleUnitManager : MonoBehaviour{
 		}
 		return 0;
 	}
+	
+	public int GetSelectedUnitLaneNum(){return GetUnitLaneNum(selectedUnit);}
+	public int GetSelectedEnemyLaneNum(){
+		int id = GRefs.btUnitDisplayManager.GetTargetedUnitID();
+		foreach(SUnitInLane u in unitsInLanes){
+			if(u.unit.ID == id)
+				return u.laneNum;
+		}
+		return -1;
+	}
 	int GetUnitLaneNum(Unit unit){
+		if(unit == null)
+			return -1;
 		foreach(SUnitInLane u in unitsInLanes){
 			if(u.unit.ID == unit.ID)
 				return u.laneNum;
