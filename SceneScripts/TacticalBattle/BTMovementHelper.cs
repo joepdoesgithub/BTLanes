@@ -126,12 +126,12 @@ public class BTMovementHelper{
 
 	public static int GetMovementHeat(int moveRemaining, int lanesMoved, bool jumping, bool stationary){
 		if(jumping)
-			return 2 * lanesMoved;
+			return GGameStats.JumpHeatPerLane * lanesMoved;
 		if(stationary)
 			return 0;
 		if(moveRemaining < 0)
-			return 2;
-		return 1;
+			return GGameStats.RunHeat;
+		return GGameStats.WalkHeat;
 	}
 
 	public static int GetToBeHitModifier(bool unitJumped, int lanesMoved){
