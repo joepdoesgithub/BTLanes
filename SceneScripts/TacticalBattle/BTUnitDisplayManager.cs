@@ -72,7 +72,7 @@ public class BTUnitDisplayManager : MonoBehaviour{
 	void CreateWeaponTable(ref SWeaponLineWithID[] table, Unit unit){
 		GEnums.SWeapon[] sortedWeapon = GetSortedWeapons(unit);
 		table = new SWeaponLineWithID[sortedWeapon.Length];
-		for(int i = 0;i<leftWeapons.Length;i++){
+		for(int i = 0;i<table.Length;i++){
 			table[i].ID = sortedWeapon[i].ID;
 			table[i].weapon = sortedWeapon[i];
 		}
@@ -99,7 +99,8 @@ public class BTUnitDisplayManager : MonoBehaviour{
 			s += string.Format("\tToBeHit: {0}",BTMovementHelper.GetToBeHitModifier(
 						GRefs.battleUnitManager.unitJumped,GRefs.battleUnitManager.lanesMoved));
 		}
-		s += string.Format("\nHt: {0} ({1})\n\n",dispUnitLeft.heat, dispUnitLeft.heatSinking);
+
+		s += string.Format("\nHt: {0} ({1})\n\n", GetNewHeatString(dispUnitLeft.heat,dispUnitLeft.heatSinking), dispUnitLeft.heatSinking);
 
 		// Weapons
 		string[] weaponTable = GetWeaponsInStringTable(leftWeapons,selectedWeaponID,false);
@@ -270,6 +271,35 @@ public class BTUnitDisplayManager : MonoBehaviour{
 			newTmplt[i] = s;
 		}
 		return newTmplt;
+	}
+
+	string GetNewHeatString(int originalHeat, int heatSinking){
+		string hexColorString = ColorUtility.ToHtmlStringRGBA(new Color32(188,49,33,255));
+		string s = "";
+		bool originalTooHot = (originalHeat > heatSinking);
+
+		s += (originalTooHot ? "<color=#" + hexColorString + ">" : "");
+		s += originalHeat.ToString();
+		s += (originalTooHot ? "</color>" : "");
+
+		string state = Globals.GetBattleState().ToString();
+		int ht = originalHeat;
+		if(state.Contains("Moving")){
+			ht += BTMovementHelper.GetMovementHeat(
+					GRefs.battleUnitManager.GetMoveRemaining(),
+					GRefs.battleUnitManager.lanesMoved,
+					GRefs.battleUnitManager.unitJumped,
+					(GRefs.battleUnitManager.GetMoveRemaining() == dispUnitLeft.walkSpeed ? true : false) );
+		}else if(state.Contains("Shooting"))
+			ht = GRefs.battleUnitManager.heat;
+		
+		bool newTooHot = (ht > heatSinking);
+		s += (ht == dispUnitLeft.heat? "" : ">");
+		s += (newTooHot ? "<color=#" + hexColorString + ">" : "");
+		s += (ht == dispUnitLeft.heat? "": ht.ToString());
+		s += (newTooHot ? "</color>" : "");
+		
+		return s;
 	}
 
 	///////////////////////////////

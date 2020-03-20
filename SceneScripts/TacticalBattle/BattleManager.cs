@@ -54,8 +54,10 @@ public class BattleManager : MonoBehaviour{
 				GRefs.btUnitDisplayManager.ResetSelections(true,true);
 				if (movingSelectNext)
 					Globals.SetBattleState(GEnums.EBattleState.ShootingInit);
-				else if (shootingSelectNext)
-					Globals.SetBattleState(GEnums.EBattleState.PhysicalInit);
+				else if (shootingSelectNext){
+					// Globals.SetBattleState(GEnums.EBattleState.PhysicalInit);
+					Globals.SetBattleState(GEnums.EBattleState.MovingInit);
+				}
 			}
 		}else if(battleState == GEnums.EBattleState.ShootingInit){
 			InitPhase(-1);

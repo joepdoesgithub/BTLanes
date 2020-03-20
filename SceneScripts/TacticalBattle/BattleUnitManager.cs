@@ -31,8 +31,9 @@ public class BattleUnitManager : MonoBehaviour{
 		public bool top;
 	}
 
-	int moveOriginalLaneNum = 0, moveOriginalFacing = 0;
+	int moveOriginalLaneNum = 0, moveOriginalFacing = 0, moveOriginalHeat;
 	int moveRemaining, runRemaining;
+	public int heat;
 	public bool unitStationary;
 	public bool unitWalkedBackwards;
 	public bool unitJumped;
@@ -180,6 +181,7 @@ public class BattleUnitManager : MonoBehaviour{
 		unitWalkedBackwards = false;
 		unitJumped = false;
 		lanesMoved = 0;
+		heat = moveOriginalHeat;
 		PlaceUnitInNewLane(selectedUnit.ID,moveOriginalLaneNum,moveOriginalFacing,false);
 	}
 
@@ -217,10 +219,10 @@ public class BattleUnitManager : MonoBehaviour{
 			}
 		}
 	}
+
 	public void FinishMove(){FinishMove(selectedUnit);}
 	public void FinishMove(Unit unit){
 		// Shooting and being shot modifiers
-		// Debug.LogFormat("moveRem {0} runRem {1} hasWalked {2}",moveRemaining,runRemaining,unitWalkedBackwards);
 		if(moveRemaining == unit.walkSpeed && runRemaining == unit.runSpeed)
 			unit.stationary = true;
 		else
@@ -230,8 +232,7 @@ public class BattleUnitManager : MonoBehaviour{
 		unit.jumped = unitJumped;
 		unit.toHitModifier = BTMovementHelper.GetToHitModifier(unit.stationary,unit.ran,unit.jumped);
 		unit.toBeHitModifier = BTMovementHelper.GetToBeHitModifier(unit.jumped,lanesMoved);
-
-		// Debug.LogFormat("LanesMoved {0} ToHit {1} ToBeHit {2}",lanesMoved,unit.toHitModifier,unit.toBeHitModifier);
+		unit.heat += BTMovementHelper.GetMovementHeat(moveRemaining,lanesMoved,unitJumped,unit.stationary);
 
 		GRefs.battleManager.FinishCurrentActingUnit();
 		mechs[ GetUnitLaneNum(unit), (GetUnitTopBot(unit)?0:1) ].GetComponent<Image>().color = Globals.UnitDisplayColors[ unit.team, 1];
@@ -248,6 +249,7 @@ public class BattleUnitManager : MonoBehaviour{
 
 				selectedUnit = unitsInLanes[i].unit;
 				lanesMoved = 0;
+				heat = unit.heat;moveOriginalHeat = unit.heat;
 
 				if(Globals.GetBattleState().ToString().Contains("Moving")){
 					moveOriginalLaneNum = unitsInLanes[i].laneNum;
@@ -281,27 +283,6 @@ public class BattleUnitManager : MonoBehaviour{
 		}
 		selectCursor = null;
 	}
-	int GetUnitFacing(Unit unit){
-		foreach(SUnitInLane u in unitsInLanes){
-			if(u.unit.ID == unit.ID)
-				return u.facing;
-		}
-		return 0;
-	}
-	int GetUnitLaneNum(Unit unit){
-		foreach(SUnitInLane u in unitsInLanes){
-			if(u.unit.ID == unit.ID)
-				return u.laneNum;
-		}
-		return -1;
-	}
-	bool GetUnitTopBot(Unit unit){
-		foreach(SUnitInLane u in unitsInLanes){
-			if(u.unit.ID == unit.ID)
-				return u.top;
-		}
-		return true;
-	}
 
 ///////////////////////////////////////////////
 /////
@@ -312,6 +293,7 @@ public class BattleUnitManager : MonoBehaviour{
 
 	public void FinishShooting(){FinishShooting(selectedUnit);}
 	public void FinishShooting(Unit unit){
+		unit.heat = heat;
 		GRefs.battleManager.FinishCurrentActingUnit();
 		mechs[ GetUnitLaneNum(unit), (GetUnitTopBot(unit)?0:1) ].GetComponent<Image>().color = Globals.UnitDisplayColors[ unit.team, 1];
 		UnselectAllUnits();
@@ -348,5 +330,27 @@ public class BattleUnitManager : MonoBehaviour{
 		selectedUnitLane = GetUnitLaneNum(selectedUnit);
 		facing = GetUnitFacing(selectedUnit);
 		ranges = GRefs.btUnitDisplayManager.GetSelectedWeaponRanges();
+	}
+
+	int GetUnitFacing(Unit unit){
+		foreach(SUnitInLane u in unitsInLanes){
+			if(u.unit.ID == unit.ID)
+				return u.facing;
+		}
+		return 0;
+	}
+	int GetUnitLaneNum(Unit unit){
+		foreach(SUnitInLane u in unitsInLanes){
+			if(u.unit.ID == unit.ID)
+				return u.laneNum;
+		}
+		return -1;
+	}
+	bool GetUnitTopBot(Unit unit){
+		foreach(SUnitInLane u in unitsInLanes){
+			if(u.unit.ID == unit.ID)
+				return u.top;
+		}
+		return true;
 	}
 }
