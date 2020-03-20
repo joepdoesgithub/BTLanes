@@ -290,10 +290,11 @@ public class BattleUnitManager : MonoBehaviour{
 //					Shooting stuff
 /////
 ///////////////////////////////////////////////
-	public void ResetShooting(){shootingHelper.Reset();}
+	public void ResetShooting(){heat = moveOriginalHeat; shootingHelper.Reset();}
 
 	public void FinishShooting(){FinishShooting(selectedUnit);}
 	public void FinishShooting(Unit unit){
+		shootingHelper.FinalizeShooting();
 		unit.heat = heat;
 		GRefs.battleManager.FinishCurrentActingUnit();
 		mechs[ GetUnitLaneNum(unit), (GetUnitTopBot(unit)?0:1) ].GetComponent<Image>().color = Globals.UnitDisplayColors[ unit.team, 1];
@@ -304,10 +305,9 @@ public class BattleUnitManager : MonoBehaviour{
 		if(selectedUnit==null || shootingHelper==null)
 			return;
 		int targetID = GRefs.btUnitDisplayManager.GetTargetedUnitID();
-		if(targetID < 0){
-			GlobalFuncs.PostMessage("You need a target if you wish to fire");
+		if(targetID < 0)
 			return;
-		}
+		
 		shootingHelper.ShootWeaponAtTargetID(GRefs.btUnitDisplayManager.GetSelectedWeaponID(selectedUnit.ID), targetID);
 		GRefs.btUnitDisplayManager.TabWeapon();
 	}
