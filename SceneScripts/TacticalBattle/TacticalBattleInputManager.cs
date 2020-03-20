@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class TacBattleInputManager : MonoBehaviour{
+public class TacticalBattleInputManager : MonoBehaviour{
 	GEnums.EBattleState battleState;
 
 	void Update(){
