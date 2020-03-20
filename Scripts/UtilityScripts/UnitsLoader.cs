@@ -28,8 +28,7 @@ public static class UnitsLoader{
 	}
 
 	public static Unit GenerateUnit(string name){
-		Unit u = new Unit();
-		LoadUnitFromFile(name,ref u);
+		Unit u = LoadUnitFromFile(name);
 		System.Random rnd = new System.Random();
 		int id = -1;
 		while(true){
@@ -44,7 +43,8 @@ public static class UnitsLoader{
 		return u;
 	}
 
-	public static void LoadUnitFromFile(string unitType, ref Unit unit){
+	public static Unit LoadUnitFromFile(string unitType){
+		Unit unit = new Unit();
 		unit.unitName = unitType;
 
 		TextAsset unitTextData = GetUnitTextasset(unitType);
@@ -52,8 +52,12 @@ public static class UnitsLoader{
 		unit.walkSpeed = (int)(unit.btWalkSpeed / 2.0 + 0.5);
 		unit.runSpeed = GetRunSpeed(unit.btWalkSpeed);
 		unit.tonnage = GetFieldFromTextAssetInt(unitTextData,TextFieldData.Tonnage);
+		unit.heatSinks = GetFieldFromTextAsset(unitTextData,TextFieldData.HeatSinks);
+		int factor = (unit.heatSinks.Contains("Single")?1:2);
+		unit.heatSinking = int.Parse( unit.heatSinks.Split(' ')[0] ) * factor;
 		UnitStructArmourHelper.SetStructArmour(ref unit, unitType);
 		WeaponsHelper.LoadUnitWeapons(ref unit, unitType, unitTextData);
+		return unit;
 	}
 
 	static int GetRunSpeed(int originalWalkSpeed){
@@ -75,7 +79,8 @@ public static class UnitsLoader{
 
 	enum TextFieldData{
 		Movement,
-		Tonnage
+		Tonnage,
+		HeatSinks
 	}
 	static int GetFieldFromTextAssetInt(TextAsset asset, TextFieldData field){return int.Parse(GetFieldFromTextAsset(asset,field));}
 	public static int GetFieldFromTextAssetInt(TextAsset asset, string searchTerm){return int.Parse(GetFieldFromTextAsset(asset,searchTerm));}
@@ -85,6 +90,8 @@ public static class UnitsLoader{
 			searchterm = "Walk MP:";
 		else if(field == TextFieldData.Tonnage)
 			searchterm = "Mass:";
+		else if(field == TextFieldData.HeatSinks)
+			searchterm = "Heat Sinks:";
 
 		if(searchterm == "")
 			return "";

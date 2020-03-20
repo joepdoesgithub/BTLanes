@@ -99,8 +99,7 @@ public class BTUnitDisplayManager : MonoBehaviour{
 			s += string.Format("\tToBeHit: {0}",BTMovementHelper.GetToBeHitModifier(
 						GRefs.battleUnitManager.unitJumped,GRefs.battleUnitManager.lanesMoved));
 		}
-		s += string.Format("\nHt: {0}\n\n",dispUnitLeft.heat);
-		// [TODO]: show heatsinking
+		s += string.Format("\nHt: {0} ({1})\n\n",dispUnitLeft.heat, dispUnitLeft.heatSinking);
 
 		// Weapons
 		string[] weaponTable = GetWeaponsInStringTable(leftWeapons,selectedWeaponID,false);
@@ -119,7 +118,7 @@ public class BTUnitDisplayManager : MonoBehaviour{
 		string s = dispUnitRight.unitName + "\n";
 		s += string.Format("WK: {0}",dispUnitRight.walkSpeed);
 		s += string.Format("\nRN: {0}",dispUnitRight.runSpeed);
-		s += string.Format("\nHt: {0}\n\n",dispUnitRight.heat);
+		s += string.Format("\nHt: {0} ({1})\n\n",dispUnitRight.heat, dispUnitRight.heatSinking);
 
 		// Weapons
 		GEnums.SWeapon[] wpnsSorted = GetSortedWeapons(dispUnitRight);

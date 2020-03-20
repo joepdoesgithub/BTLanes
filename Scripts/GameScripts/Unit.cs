@@ -12,6 +12,8 @@ public class Unit{
 	public string unitName;
 	public int tonnage;
 	public int heat = 0;
+	public string heatSinks;
+	public int heatSinking;
 
 	public int team;
 	public int ID;
