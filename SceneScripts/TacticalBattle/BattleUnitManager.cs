@@ -304,7 +304,7 @@ public class BattleUnitManager : MonoBehaviour{
 	public void FireSelectedWeaponAtTarget(){
 		if(selectedUnit==null || shootingHelper==null)
 			return;
-		int targetID = GRefs.btUnitDisplayManager.GetTargetedUnitID();
+		int targetID = GRefs.btUnitDisplayManager.GetSelectedEnemyID();
 		if(targetID < 0)
 			return;
 		
@@ -340,10 +340,12 @@ public class BattleUnitManager : MonoBehaviour{
 		}
 		return 0;
 	}
+	public int GetSelectedEnemyFacing(){return GetUnitFacing( GRefs.btUnitDisplayManager.GetSelectedEnemy() );}
+	public int GetSelectedUnitFacing(){return GetUnitFacing( selectedUnit );}
 	
 	public int GetSelectedUnitLaneNum(){return GetUnitLaneNum(selectedUnit);}
 	public int GetSelectedEnemyLaneNum(){
-		int id = GRefs.btUnitDisplayManager.GetTargetedUnitID();
+		int id = GRefs.btUnitDisplayManager.GetSelectedEnemyID();
 		foreach(SUnitInLane u in unitsInLanes){
 			if(u.unit.ID == id)
 				return u.laneNum;

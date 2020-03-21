@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 public class BTShootingHelper{
 	Unit selectedUnit;
@@ -54,6 +55,22 @@ public class BTShootingHelper{
 				else
 					s += " Miss.";
 				GlobalFuncs.PostMessage(s);
+				
+				string tests = "";
+				BTDamageHelper.ResolveDamage(
+					dist,
+					GRefs.battleUnitManager.GetSelectedUnitFacing(),
+					GRefs.battleUnitManager.GetSelectedEnemyFacing(),
+					(int)wpn.damage,
+					GRefs.btUnitDisplayManager.GetSelectedEnemyID(),
+					out tests);
+
+				string dt = "";
+				Unit e = GLancesAndUnits.GetUnit(GRefs.btUnitDisplayManager.GetSelectedEnemyID());
+				foreach(GEnums.EMechLocation l in Enum.GetValues(typeof(GEnums.EMechLocation))){
+					dt+= string.Format("{0},{1}  ",l.ToString(),e.DArmourPoints[l]);
+				}
+				Debug.Log(dt);
 			}
 		}
 	}

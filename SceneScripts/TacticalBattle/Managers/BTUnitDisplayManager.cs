@@ -11,7 +11,7 @@ public class BTUnitDisplayManager : MonoBehaviour{
 	SWeaponLineWithID[] leftWeapons;
 	Unit dispUnitRight = null;
 	SWeaponLineWithID[] rightWeapons;
-	public int GetTargetedUnitID(){return (dispUnitRight==null ? -1: dispUnitRight.ID);}
+	public int GetSelectedEnemyID(){return (dispUnitRight==null ? -1: dispUnitRight.ID);}
 	public Unit GetSelectedEnemy(){return dispUnitRight;}
 
 	static Color32[] textColors = {new Color32(255,255,255,255), new Color32(34,250,0,255)};
