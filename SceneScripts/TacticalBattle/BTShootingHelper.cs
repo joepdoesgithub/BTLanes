@@ -19,7 +19,7 @@ public class BTShootingHelper{
 		foreach(SWeaponToFire w in wpns){
 			if(w.hasFired && w.targetID > 0){
 				GEnums.SWeapon wpn = GetWpnFromID(w.weaponID);
-				Debug.LogFormat("{0} at {1}",GetSWeaponFromID(w.weaponID),GLancesAndUnits.GetUnit(w.targetID));
+				// Debug.LogFormat("{0} at {1}",GetSWeaponFromID(w.weaponID),GLancesAndUnits.GetUnit(w.targetID));
 
 				int shooterLaneNum = GRefs.battleUnitManager.GetSelectedUnitLaneNum();
 				int targetLaneNum = GRefs.battleUnitManager.GetSelectedEnemyLaneNum();
@@ -55,22 +55,25 @@ public class BTShootingHelper{
 				else
 					s += " Miss.";
 				GlobalFuncs.PostMessage(s);
-				
+
 				string tests = "";
 				BTDamageHelper.ResolveDamage(
 					dist,
 					GRefs.battleUnitManager.GetSelectedUnitFacing(),
 					GRefs.battleUnitManager.GetSelectedEnemyFacing(),
-					(int)wpn.damage,
+					w.weaponID,
+					selectedUnit.ID,
 					GRefs.btUnitDisplayManager.GetSelectedEnemyID(),
 					out tests);
 
-				string dt = "";
-				Unit e = GLancesAndUnits.GetUnit(GRefs.btUnitDisplayManager.GetSelectedEnemyID());
-				foreach(GEnums.EMechLocation l in Enum.GetValues(typeof(GEnums.EMechLocation))){
-					dt+= string.Format("{0},{1}  ",l.ToString(),e.DArmourPoints[l]);
-				}
-				Debug.Log(dt);
+				Debug.Log(tests);
+
+				// string dt = "";
+				// Unit e = GLancesAndUnits.GetUnit(GRefs.btUnitDisplayManager.GetSelectedEnemyID());
+				// foreach(GEnums.EMechLocation l in Enum.GetValues(typeof(GEnums.EMechLocation))){
+				// 	dt+= string.Format("{0},{1}  ",l.ToString(),e.DArmourPoints[l]);
+				// }
+				// Debug.Log(dt);
 			}
 		}
 	}
@@ -142,6 +145,15 @@ public class BTShootingHelper{
 		}
 		return -1;
 	}
+
+	public static GEnums.SWeapon GetWpnFromID(int unitId, int weaponID){
+		foreach(GEnums.SWeapon w in GLancesAndUnits.GetUnit(unitId).weapons){
+			if(w.ID == weaponID)
+				return w;
+		}
+		return new GEnums.SWeapon();
+	}
+
 	GEnums.SWeapon GetWpnFromID(int id){
 		for(int i = 0;i<selectedUnit.weapons.Length;i++){
 			if(selectedUnit.weapons[i].ID == id)

@@ -42,10 +42,45 @@ public class SceneSwitcher : MonoBehaviour{
 		SwitchToBase();
 	}
 
+	int GetD6(){return UnityEngine.Random.Range(1,7);}
+	int Get2D6(){return GetD6() + GetD6();}
+
 	void TestFunc(){
-		foreach(KeyValuePair<GEnums.EMechLocation,int> v in GLancesAndUnits.units[0].DStructucePoints){
-			Debug.Log(v.Key.ToString() + " " + v.Value.ToString());
+		int prev = Get2D6();
+		int numSeq = 0;
+		int cnt = 0;
+		int[] dist = new int[11];
+		for(int i = 0;i<dist.Length;i++)
+			dist[i] = 0;
+		
+		int sum = 0;
+		int maxLen = int.MinValue;
+
+		int x;
+		for(int i = 0;i<10000000;i++){
+			x = Get2D6();
+			dist[x-2]++;
+			// Debug.Log(x);
+
+			if(x == prev){
+				numSeq++;
+				continue;
+			}else if(numSeq > 0){
+				int seqLen = numSeq + 1;
+					sum += seqLen;
+				if(seqLen > maxLen)
+					maxLen = seqLen;
+					numSeq = 0;
+					cnt++;
+			}
+
+			prev = x;
 		}
 
+		string s = "";
+		for(int i = 0;i<dist.Length;i++)
+			s += string.Format("{0}: {1}\n",i+2,dist[i]);
+		Debug.Log(s);
+		Debug.LogFormat("AvgSeqLen {0}, maxLen {1}",sum/((double)cnt),maxLen);
 	}
 }

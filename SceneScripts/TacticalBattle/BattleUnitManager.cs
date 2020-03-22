@@ -66,9 +66,7 @@ public class BattleUnitManager : MonoBehaviour{
 
 	void InitiateAllUnits(){
 		List<SUnitInLane> l = new List<SUnitInLane>();
-		string sout = "Initiatives: ";
 		for(int team = 0;team <=1; team++){
-			sout += (team==0?"Friendly[":"Enemy:[");
 			int unitsPlaced = 0;
 			int counter = 0;
 			for(int i = TacBattleData.lances[team].units.Length - 1; i>= 0; i--){
@@ -78,7 +76,7 @@ public class BattleUnitManager : MonoBehaviour{
 				bool startLeft = (team == 0 ? true : false);
 				int unitLaneNum = startLeft ? counter : lanes.Length - 1 - counter;
 				if(team == 0)
-					unitLaneNum = i;
+					unitLaneNum += 7;
 				unitsPlaced++;if(unitsPlaced%2==0){counter++;}
 
 				// Facing
@@ -107,12 +105,8 @@ public class BattleUnitManager : MonoBehaviour{
 				float rot = (facing<0?90:-90);
 				mechs[unitInLane.laneNum,(unitInLane.top?0:1)].transform.rotation = Quaternion.Euler(0f,0f,rot);
 				mechs[unitInLane.laneNum,(unitInLane.top?0:1)].GetComponent<Image>().color = Globals.UnitDisplayColors[ u.team, 0 ];
-
-				sout += string.Format("{0},{1} ",u.unitName,u.pilot.Initiative);
 			}
-			sout += "]";
 		}
-		Debug.Log(sout);
 	}
 
 	void PlaceUnitInNewLane(int unitID, int newLane, int newFacing, bool hasActed){
