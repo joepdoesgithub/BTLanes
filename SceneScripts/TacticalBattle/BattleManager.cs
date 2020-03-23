@@ -6,6 +6,8 @@ public class BattleManager : MonoBehaviour{
 	SPlayerOrder[] PlayerOrder;
 	public SPlayerOrder[] GetPlayerOrders(){return PlayerOrder;}
 
+	bool first = true;
+
 	GEnums.EBattleState battleState;
 
 	void Start(){GRefs.battleManager = this;}
@@ -15,6 +17,12 @@ public class BattleManager : MonoBehaviour{
 	bool shootingSelectNext;
     void Update(){
 		battleState = Globals.GetBattleState();
+		// if(first && battleState != GEnums.EBattleState.AllInit){
+		// 	first = false;
+		// 	for(int i = 0;i<20;i++)
+		// 		GlobalFuncs.PostMessage("testing " + i.ToString());
+		// }
+
 		movingSelectNext = (battleState == GEnums.EBattleState.MovingSelectNext);
 		shootingSelectNext = (battleState == GEnums.EBattleState.ShootingSelectNext);
 
@@ -28,6 +36,11 @@ public class BattleManager : MonoBehaviour{
 			bool done = true;
 			for(int i = 0;i<PlayerOrder.Length;i++){
 				if(PlayerOrder[i].hasActed == false){
+					if(PlayerOrder[i].unit.IsUnitDestroyed()){
+						PlayerOrder[i].hasActed = true;
+						PlayerOrder[i].isActing = false;
+						continue;
+					}
 					done = false;
 					PlayerOrder[i].hasActed = true;
 					PlayerOrder[i].isActing = true;

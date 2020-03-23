@@ -32,4 +32,10 @@ public class Unit{
 	public Unit(){
 		pilot = new Pilot();
 	}
+
+	public bool IsUnitDestroyed(){
+		if(DStructucePoints[GEnums.EMechLocation.HD] <= 0 || DStructucePoints[GEnums.EMechLocation.CT] <= 0)
+			return true;
+		return false;
+	}
 }

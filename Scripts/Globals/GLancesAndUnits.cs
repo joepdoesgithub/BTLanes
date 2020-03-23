@@ -13,8 +13,6 @@ public static class GLancesAndUnits{
 		}
 		return null;
 	}
-
-
 }
 
 public class Lance{

@@ -11,7 +11,7 @@ public class BTUnitDisplayManager : MonoBehaviour{
 	SWeaponLineWithID[] leftWeapons;
 	Unit dispUnitRight = null;
 	SWeaponLineWithID[] rightWeapons;
-	public int GetTargetedUnitID(){return (dispUnitRight==null ? -1: dispUnitRight.ID);}
+	public int GetSelectedEnemyID(){return (dispUnitRight==null ? -1: dispUnitRight.ID);}
 	public Unit GetSelectedEnemy(){return dispUnitRight;}
 
 	static Color32[] textColors = {new Color32(255,255,255,255), new Color32(34,250,0,255)};
@@ -28,11 +28,15 @@ public class BTUnitDisplayManager : MonoBehaviour{
     // Update is called once per frame
     void Update(){
 		string state = Globals.GetBattleState().ToString();
+		
+		ResetSelections(
+			(dispUnitLeft != null && dispUnitLeft.IsUnitDestroyed()),
+			(dispUnitRight != null && dispUnitRight.IsUnitDestroyed()) );
+
         if(dispUnitLeft == null)
 			textLeft.text = "";
-		else{
+		else
 			DisplayFriendlyUnit();
-		}
 		if(dispUnitRight == null)
 			textRight.text = "";
 		else
@@ -44,7 +48,7 @@ public class BTUnitDisplayManager : MonoBehaviour{
 		bool getNext = (dispUnitRight == null ? true : false);
 		for(int i = 0;;){
 			if(getNext){
-				if(orders[i].unit.team != 0){
+				if( (!orders[i].unit.IsUnitDestroyed()) && orders[i].unit.team != 0){
 					dispUnitRight = orders[i].unit;
 					CreateWeaponTable(ref rightWeapons,dispUnitRight);
 					break;

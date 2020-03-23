@@ -66,9 +66,7 @@ public class BattleUnitManager : MonoBehaviour{
 
 	void InitiateAllUnits(){
 		List<SUnitInLane> l = new List<SUnitInLane>();
-		string sout = "Initiatives: ";
 		for(int team = 0;team <=1; team++){
-			sout += (team==0?"Friendly[":"Enemy:[");
 			int unitsPlaced = 0;
 			int counter = 0;
 			for(int i = TacBattleData.lances[team].units.Length - 1; i>= 0; i--){
@@ -78,7 +76,7 @@ public class BattleUnitManager : MonoBehaviour{
 				bool startLeft = (team == 0 ? true : false);
 				int unitLaneNum = startLeft ? counter : lanes.Length - 1 - counter;
 				if(team == 0)
-					unitLaneNum = i;
+					unitLaneNum += 7;
 				unitsPlaced++;if(unitsPlaced%2==0){counter++;}
 
 				// Facing
@@ -107,12 +105,8 @@ public class BattleUnitManager : MonoBehaviour{
 				float rot = (facing<0?90:-90);
 				mechs[unitInLane.laneNum,(unitInLane.top?0:1)].transform.rotation = Quaternion.Euler(0f,0f,rot);
 				mechs[unitInLane.laneNum,(unitInLane.top?0:1)].GetComponent<Image>().color = Globals.UnitDisplayColors[ u.team, 0 ];
-
-				sout += string.Format("{0},{1} ",u.unitName,u.pilot.Initiative);
 			}
-			sout += "]";
 		}
-		Debug.Log(sout);
 	}
 
 	void PlaceUnitInNewLane(int unitID, int newLane, int newFacing, bool hasActed){
@@ -122,6 +116,8 @@ public class BattleUnitManager : MonoBehaviour{
 		foreach(SUnitInLane u in unitsInLanes){
 			if(u.unit.ID == unitID){
 				s = u.unitSprite;
+				if(u.unit.IsUnitDestroyed())
+					s = UnitsLoader.GetUnitDestroyedSprite(u.unit);
 				mechs[u.laneNum, (u.top?0:1) ].SetActive(false);
 				u.laneNum = newLane;
 				u.facing = newFacing;
@@ -290,10 +286,11 @@ public class BattleUnitManager : MonoBehaviour{
 //					Shooting stuff
 /////
 ///////////////////////////////////////////////
-	public void ResetShooting(){shootingHelper.Reset();}
+	public void ResetShooting(){heat = moveOriginalHeat; shootingHelper.Reset();}
 
 	public void FinishShooting(){FinishShooting(selectedUnit);}
 	public void FinishShooting(Unit unit){
+		shootingHelper.FinalizeShooting();
 		unit.heat = heat;
 		GRefs.battleManager.FinishCurrentActingUnit();
 		mechs[ GetUnitLaneNum(unit), (GetUnitTopBot(unit)?0:1) ].GetComponent<Image>().color = Globals.UnitDisplayColors[ unit.team, 1];
@@ -301,13 +298,13 @@ public class BattleUnitManager : MonoBehaviour{
 	}
 
 	public void FireSelectedWeaponAtTarget(){
+		// Debug.LogFormat("Selected: {0} helper {1} targetId {2}",selectedUnit.ToString(),shootingHelper.ToString(),GRefs.btUnitDisplayManager.GetSelectedEnemyID());
 		if(selectedUnit==null || shootingHelper==null)
 			return;
-		int targetID = GRefs.btUnitDisplayManager.GetTargetedUnitID();
-		if(targetID < 0){
-			GlobalFuncs.PostMessage("You need a target if you wish to fire");
+		int targetID = GRefs.btUnitDisplayManager.GetSelectedEnemyID();
+		if(targetID < 0)
 			return;
-		}
+		
 		shootingHelper.ShootWeaponAtTargetID(GRefs.btUnitDisplayManager.GetSelectedWeaponID(selectedUnit.ID), targetID);
 		GRefs.btUnitDisplayManager.TabWeapon();
 	}
@@ -322,6 +319,24 @@ public class BattleUnitManager : MonoBehaviour{
 //					Other stuff
 /////
 ///////////////////////////////////////////////
+	public void DestroyUnit(int unitID){
+		for(int i = 0;i<unitsInLanes.Length;i++){
+			if(unitsInLanes[i].unit.ID == unitID){
+				unitsInLanes[i].unitSprite = UnitsLoader.GetUnitDestroyedSprite( GLancesAndUnits.GetUnit(unitID) );
+				PlaceUnitInNewLane(
+					unitID,
+					unitsInLanes[i].laneNum,
+					unitsInLanes[i].facing,
+					true);
+
+				int lane = unitsInLanes[i].laneNum;
+				int top = (unitsInLanes[i].top?0:1);
+				// mechs[lane,top].GetComponent<Image>().sprite = unitsInLanes[i].unitSprite;
+				return;
+			}
+		}
+	}
+
 	public void GetRangeBandInfo(out int unitID, out int weaponID,	out int selectedUnitLane, out int facing, out int[] ranges){
 		unitID = -1;weaponID = -1;selectedUnitLane = -1;facing = 0;ranges = new int[0];
 		if(selectedUnit == null)
@@ -340,10 +355,12 @@ public class BattleUnitManager : MonoBehaviour{
 		}
 		return 0;
 	}
+	public int GetSelectedEnemyFacing(){return GetUnitFacing( GRefs.btUnitDisplayManager.GetSelectedEnemy() );}
+	public int GetSelectedUnitFacing(){return GetUnitFacing( selectedUnit );}
 	
 	public int GetSelectedUnitLaneNum(){return GetUnitLaneNum(selectedUnit);}
 	public int GetSelectedEnemyLaneNum(){
-		int id = GRefs.btUnitDisplayManager.GetTargetedUnitID();
+		int id = GRefs.btUnitDisplayManager.GetSelectedEnemyID();
 		foreach(SUnitInLane u in unitsInLanes){
 			if(u.unit.ID == id)
 				return u.laneNum;

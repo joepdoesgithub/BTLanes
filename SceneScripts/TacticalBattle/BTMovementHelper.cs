@@ -135,18 +135,10 @@ public class BTMovementHelper{
 	}
 
 	public static int GetToBeHitModifier(bool unitJumped, int lanesMoved){
-		int[,] table = {
-			{0, 1, 0},
-			{2, 2, 1},
-			{3, 3, 2},
-			{4, 5, 3},
-			{6, 8, 4},
-			{9, 12, 5},
-			{13, int.MaxValue, 6} };
 		int ret = (unitJumped? 1: 0);
-		for(int i = 0;i<table.GetLength(0);i++){
-			if(lanesMoved >= table[i,0] && lanesMoved <= table[i,1])
-				return ret + table[i,2];
+		for(int i = 0;i<GGameStats.ToBeHitLanesMoved.GetLength(0);i++){
+			if(lanesMoved >= GGameStats.ToBeHitLanesMoved[i,0] && lanesMoved <= GGameStats.ToBeHitLanesMoved[i,1])
+				return ret + GGameStats.ToBeHitLanesMoved[i,2];
 		}
 		return ret;
 	}

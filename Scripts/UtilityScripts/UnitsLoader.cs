@@ -27,6 +27,16 @@ public static class UnitsLoader{
 		return unitSprite;
 	}
 
+	public static Sprite GetUnitDestroyedSprite(Unit unit){
+		Sprite unitSprite = Resources.Load<Sprite>("Wrecks/" + unit.unitName);				
+		if(unitSprite == null)
+			unitSprite = Resources.Load<Sprite>("Wrecks/" + unit.unitName.Split(' ')[0]);
+		if(unitSprite == null)
+			Debug.LogError(string.Format("UnitsLoader.GetUnitDestroyedSprie: Can't load image with name {0} or {1}, loading a Griffin",unit.unitName,unit.unitName.Split(' ')[0]));
+		unitSprite = Resources.Load<Sprite>("Wrecks/" + "Griffin");
+		return unitSprite;
+	}
+
 	public static Unit GenerateUnit(string name){
 		Unit u = LoadUnitFromFile(name);
 		System.Random rnd = new System.Random();
