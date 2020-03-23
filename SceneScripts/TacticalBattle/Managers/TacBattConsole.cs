@@ -8,8 +8,8 @@ public class TacBattConsole : MonoBehaviour{
 
 	List<string> outputs;
 
-	static int numLines = 5;
-	static int maxCharsPerLine = 170;
+	static int numLines = 25;
+	static int maxCharsPerLine = 85;
 
 	// bool first = true;
 
@@ -20,6 +20,14 @@ public class TacBattConsole : MonoBehaviour{
     }
 
 	public void PostMessage(string msg){
+		if(msg.Contains("\n")){
+			string[] msgs = msg.Split('\n');
+			for(int i = 0; i<msgs.Length;i++){
+				if(msgs[i].Length > 0)
+					PostMessage(msgs[i]);
+			} 
+		}
+
 		if(msg.Length > maxCharsPerLine){
 			int start = 0;
 			while(true){

@@ -1342,8 +1342,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 130, y: 170}
-  m_SizeDelta: {x: 500, y: 535}
+  m_AnchoredPosition: {x: 20, y: 21.5}
+  m_SizeDelta: {x: 450, y: 683.5}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &232220979
 MonoBehaviour:
@@ -1417,8 +1417,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 20, y: 20}
-  m_SizeDelta: {x: 1880, y: 125}
+  m_AnchoredPosition: {x: 953, y: 19.8}
+  m_SizeDelta: {x: 945, y: 587.2}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &239268642
 MonoBehaviour:
@@ -4140,8 +4140,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -130, y: 170}
-  m_SizeDelta: {x: 500, y: 535}
+  m_AnchoredPosition: {x: -980, y: 21.5}
+  m_SizeDelta: {x: 450, y: 683.5}
   m_Pivot: {x: 1, y: 0}
 --- !u!114 &959173505
 MonoBehaviour:
@@ -6155,7 +6155,11 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: New Text
+  m_Text: '1
+
+    2
+
+    3'
 --- !u!222 &1553684901
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -6972,7 +6976,47 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: '1
+  m_Text: '1234567891123456789212345678931234567894123456789512345678961234567897123456789812345
+
+    2
+
+    3
+
+    4
+
+    5
+
+    6
+
+    7
+
+    8
+
+    9
+
+    0
+
+    1
+
+    2
+
+    3
+
+    4
+
+    5
+
+    6
+
+    7
+
+    8
+
+    9
+
+    2
+
+    1
 
     2
 
@@ -8355,11 +8399,11 @@ RectTransform:
   m_Father: {fileID: 696537467}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0}
-  m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 170}
-  m_SizeDelta: {x: 500, y: 155.6}
-  m_Pivot: {x: 0.5, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 953, y: 630}
+  m_SizeDelta: {x: 945, y: 76}
+  m_Pivot: {x: 0, y: 0}
 --- !u!114 &2017060217
 MonoBehaviour:
   m_ObjectHideFlags: 0

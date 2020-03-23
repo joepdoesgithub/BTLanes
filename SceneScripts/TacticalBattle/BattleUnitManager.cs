@@ -298,6 +298,7 @@ public class BattleUnitManager : MonoBehaviour{
 	}
 
 	public void FireSelectedWeaponAtTarget(){
+		// Debug.LogFormat("Selected: {0} helper {1} targetId {2}",selectedUnit.ToString(),shootingHelper.ToString(),GRefs.btUnitDisplayManager.GetSelectedEnemyID());
 		if(selectedUnit==null || shootingHelper==null)
 			return;
 		int targetID = GRefs.btUnitDisplayManager.GetSelectedEnemyID();
