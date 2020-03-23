@@ -116,6 +116,8 @@ public class BattleUnitManager : MonoBehaviour{
 		foreach(SUnitInLane u in unitsInLanes){
 			if(u.unit.ID == unitID){
 				s = u.unitSprite;
+				if(u.unit.IsUnitDestroyed())
+					s = UnitsLoader.GetUnitDestroyedSprite(u.unit);
 				mechs[u.laneNum, (u.top?0:1) ].SetActive(false);
 				u.laneNum = newLane;
 				u.facing = newFacing;
@@ -316,6 +318,24 @@ public class BattleUnitManager : MonoBehaviour{
 //					Other stuff
 /////
 ///////////////////////////////////////////////
+	public void DestroyUnit(int unitID){
+		for(int i = 0;i<unitsInLanes.Length;i++){
+			if(unitsInLanes[i].unit.ID == unitID){
+				unitsInLanes[i].unitSprite = UnitsLoader.GetUnitDestroyedSprite( GLancesAndUnits.GetUnit(unitID) );
+				PlaceUnitInNewLane(
+					unitID,
+					unitsInLanes[i].laneNum,
+					unitsInLanes[i].facing,
+					true);
+
+				int lane = unitsInLanes[i].laneNum;
+				int top = (unitsInLanes[i].top?0:1);
+				// mechs[lane,top].GetComponent<Image>().sprite = unitsInLanes[i].unitSprite;
+				return;
+			}
+		}
+	}
+
 	public void GetRangeBandInfo(out int unitID, out int weaponID,	out int selectedUnitLane, out int facing, out int[] ranges){
 		unitID = -1;weaponID = -1;selectedUnitLane = -1;facing = 0;ranges = new int[0];
 		if(selectedUnit == null)

@@ -28,6 +28,11 @@ public class BattleManager : MonoBehaviour{
 			bool done = true;
 			for(int i = 0;i<PlayerOrder.Length;i++){
 				if(PlayerOrder[i].hasActed == false){
+					if(PlayerOrder[i].unit.IsUnitDestroyed()){
+						PlayerOrder[i].hasActed = true;
+						PlayerOrder[i].isActing = false;
+						continue;
+					}
 					done = false;
 					PlayerOrder[i].hasActed = true;
 					PlayerOrder[i].isActing = true;

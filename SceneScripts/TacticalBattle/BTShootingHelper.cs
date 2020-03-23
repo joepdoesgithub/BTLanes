@@ -48,15 +48,18 @@ public class BTShootingHelper{
 				int targetNum = gunnery + rangeMod + toHitMod + toBeHitMod + terrainMod + secondTargetMod + armMod;
 				int roll = rnd.Next(1,7) + rnd.Next(1,7);
 
-				string s = string.Format("Firing {0} at {1}. Needs a {2}, rolled {3}.",wpn.name,GRefs.battleUnitManager.GetSelectedUnit().unitName,targetNum,roll);
+				string s = string.Format("Firing {0} at {1}. Needs a {2}, rolled {3}.",wpn.name,GRefs.btUnitDisplayManager.GetSelectedEnemy().unitName,targetNum,roll);
 
-				if(roll >= targetNum)
-					s += " Hit! Doing " + wpn.damage + " damage";
-				else
+				if(roll < targetNum){
 					s += " Miss.";
+					GlobalFuncs.PostMessage(s);
+					return;
+				}
+
+				s += " Hit!";
 				GlobalFuncs.PostMessage(s);
 
-				string tests = "";
+				string dmgString = "";
 				BTDamageHelper.ResolveDamage(
 					dist,
 					GRefs.battleUnitManager.GetSelectedUnitFacing(),
@@ -64,9 +67,10 @@ public class BTShootingHelper{
 					w.weaponID,
 					selectedUnit.ID,
 					GRefs.btUnitDisplayManager.GetSelectedEnemyID(),
-					out tests);
+					out dmgString);
+				GlobalFuncs.PostMessage(dmgString);
 
-				Debug.Log(tests);
+				// Debug.Log(tests);
 
 				// string dt = "";
 				// Unit e = GLancesAndUnits.GetUnit(GRefs.btUnitDisplayManager.GetSelectedEnemyID());
@@ -151,6 +155,7 @@ public class BTShootingHelper{
 			if(w.ID == weaponID)
 				return w;
 		}
+		Debug.LogErrorFormat("BTShootingHelper.GetWpnFromID1: could not find the weapon!!");
 		return new GEnums.SWeapon();
 	}
 
@@ -159,6 +164,7 @@ public class BTShootingHelper{
 			if(selectedUnit.weapons[i].ID == id)
 				return selectedUnit.weapons[i];
 		}
+		Debug.LogErrorFormat("BTShootingHelper.GetWpnFromID2: could not find the weapon!!");
 		return new GEnums.SWeapon();
 	}
 
