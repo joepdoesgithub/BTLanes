@@ -52,6 +52,9 @@ public static class GEnums{
 		ShootingInit,
 		ShootingSelectNext,
 		ShootingWaitingForInput,
-		PhysicalInit
+		PhysicalInit,
+		PhysicalSelectNext,
+		PhysicalWaitingForInput,
+		EndPhase
 	}
 }

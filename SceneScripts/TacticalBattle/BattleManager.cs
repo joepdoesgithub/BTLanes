@@ -6,25 +6,19 @@ public class BattleManager : MonoBehaviour{
 	SPlayerOrder[] PlayerOrder;
 	public SPlayerOrder[] GetPlayerOrders(){return PlayerOrder;}
 
-	bool first = true;
-
 	GEnums.EBattleState battleState;
 
 	void Start(){GRefs.battleManager = this;}
 
+	bool movingSelectNext, shootingSelectNext, physicalSelectNext;
+
     // Update is called once per frame
-	bool movingSelectNext;
-	bool shootingSelectNext;
     void Update(){
 		battleState = Globals.GetBattleState();
-		// if(first && battleState != GEnums.EBattleState.AllInit){
-		// 	first = false;
-		// 	for(int i = 0;i<20;i++)
-		// 		GlobalFuncs.PostMessage("testing " + i.ToString());
-		// }
 
 		movingSelectNext = (battleState == GEnums.EBattleState.MovingSelectNext);
 		shootingSelectNext = (battleState == GEnums.EBattleState.ShootingSelectNext);
+		physicalSelectNext = (battleState == GEnums.EBattleState.PhysicalSelectNext);
 
 		if(battleState == GEnums.EBattleState.AllInit)
 			return;
@@ -32,8 +26,9 @@ public class BattleManager : MonoBehaviour{
 			InitPhase(1);
 			GRefs.battleUnitManager.NextPhase(battleState);
 			Globals.SetBattleState(GEnums.EBattleState.MovingSelectNext);
-		}else if(movingSelectNext || shootingSelectNext){
+		}else if(movingSelectNext || shootingSelectNext || physicalSelectNext){
 			bool done = true;
+
 			for(int i = 0;i<PlayerOrder.Length;i++){
 				if(PlayerOrder[i].hasActed == false){
 					if(PlayerOrder[i].unit.IsUnitDestroyed()){
@@ -41,47 +36,86 @@ public class BattleManager : MonoBehaviour{
 						PlayerOrder[i].isActing = false;
 						continue;
 					}
+
 					done = false;
 					PlayerOrder[i].hasActed = true;
 					PlayerOrder[i].isActing = true;
+
 					GRefs.battleUnitManager.SelectMech(PlayerOrder[i].unit);
+
 					if(PlayerOrder[i].unit.team != 0){
 						//AI turn
 						GlobalFuncs.PostMessage(string.Format("Doing AI {0} turn for " + PlayerOrder[i].unit.unitName, (movingSelectNext?"moving":"shooting") ));
+
 						if(movingSelectNext)
 							GRefs.battleUnitManager.FinishMove(PlayerOrder[i].unit);
-						else
+						else if(shootingSelectNext)
 							GRefs.battleUnitManager.FinishShooting(PlayerOrder[i].unit);
-						// Globals.SetBattleState(GEnums.EBattleState.MovingSelectNext);
+						else{
+							jkl;
+						}
 						return;
 					}
 					if(movingSelectNext)
 						Globals.SetBattleState(GEnums.EBattleState.MovingWaitingForInput);
 					else if(shootingSelectNext)
 						Globals.SetBattleState(GEnums.EBattleState.ShootingWaitingForInput);
+					else if(physicalSelectNext)
+						Globals.SetBattleState(GEnums.EBattleState.PhysicalWaitingForInput);
 					return;
 				}
 			}
+
 			if(done){
 				GRefs.battleUnitManager.UnselectAllUnits();
 				GRefs.btUnitDisplayManager.ResetSelections(true,true);
 				if (movingSelectNext)
 					Globals.SetBattleState(GEnums.EBattleState.ShootingInit);
-				else if (shootingSelectNext){
-					// Globals.SetBattleState(GEnums.EBattleState.PhysicalInit);
-					Globals.SetBattleState(GEnums.EBattleState.MovingInit);
-				}
+				else if (shootingSelectNext)
+					Globals.SetBattleState(GEnums.EBattleState.PhysicalInit);
+				else if (physicalSelectNext)
+					Globals.SetBattleState(GEnums.EBattleState.MovingSelectNext);
 			}
 		}else if(battleState == GEnums.EBattleState.ShootingInit){
 			InitPhase(-1);
 			Globals.SetBattleState(GEnums.EBattleState.ShootingSelectNext);
 			GRefs.battleUnitManager.NextPhase(battleState);
+		}else if(battleState == GEnums.EBattleState.PhysicalInit){
+			InitPhysicalPhase();
+			Globals.SetBattleState(GEnums.EBattleState.PhysicalSelectNext);
+			GRefs.battleUnitManager.NextPhase(battleState);
+		}else if(battleState == GEnums.EBattleState.PhysicalSelectNext){
+			jkl;
 		}
     }
 
-	void InitPhase(int direction){
-		System.Random rnd = new System.Random();
+	void InitPhysicalPhase(){
+		List<int> newList = new List<int>();
+		List<Unit> unitsInBattle = TacBattleData.GetAllUnitsInBattle();
 
+		int maxPiloting = int.MinValue;
+		foreach(Unit u in unitsInBattle)
+			maxPiloting = (u.pilot.Pilotting > maxPiloting ? u.pilot.Pilotting : maxPiloting);
+
+		for(int i = 0; i <= maxPiloting; i++){
+			List<int> shortList = new List<int>();
+
+			foreach(Unit u in unitsInBattle){
+				if(u.pilot.Pilotting == i)
+					shortList.Add(u.ID);
+			}
+			while(shortList.Count > 0){
+				int index = UnityEngine.Random.Range(0,shortList.Count);
+				newList.Add( shortList[index] );
+				shortList.RemoveAt(index);
+			}
+		}
+		PlayerOrder = new SPlayerOrder[newList.Count];
+		for(int i = 0;i<newList.Count;i++)
+			PlayerOrder[i] = new SPlayerOrder(GLancesAndUnits.GetUnit(newList[i]));
+	}
+
+	void InitPhase(int direction){
 		List<int> newList = new List<int>();
 		List<Unit> unitsInBattle = TacBattleData.GetAllUnitsInBattle();
 		int startI = (direction>0?Globals.MinPilotInitiative:Globals.MaxPilotInitiative);
@@ -94,7 +128,7 @@ public class BattleManager : MonoBehaviour{
 					shortList.Add(u.ID);
 			}
 			while(shortList.Count > 0){
-				int index = rnd.Next(0,shortList.Count);
+				int index = UnityEngine.Random.Range(0,shortList.Count);
 				newList.Add( shortList[index] );
 				shortList.RemoveAt(index);
 			}
