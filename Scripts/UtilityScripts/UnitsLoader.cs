@@ -32,7 +32,8 @@ public static class UnitsLoader{
 		if(unitSprite == null)
 			unitSprite = Resources.Load<Sprite>("Wrecks/" + unit.unitName.Split(' ')[0]);
 		if(unitSprite == null)
-			Debug.LogError(string.Format("UnitsLoader.GetUnitDestroyedSprie: Can't load image with name {0} or {1}",unit.unitName,unit.unitName.Split(' ')[0]));
+			Debug.LogError(string.Format("UnitsLoader.GetUnitDestroyedSprie: Can't load image with name {0} or {1}, loading a Griffin",unit.unitName,unit.unitName.Split(' ')[0]));
+		unitSprite = Resources.Load<Sprite>("Wrecks/" + "Griffin");
 		return unitSprite;
 	}
 
