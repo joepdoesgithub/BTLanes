@@ -20,7 +20,6 @@ public class BTShootingHelper{
 		GlobalFuncs.PostMessage("   " + selectedUnit.unitName + ":");
 
 		foreach(SWeaponToFire w in wpns){
-			Debug.Log(w.hasFired);
 			if(w.hasFired && w.targetID > 0){
 				GEnums.SWeapon wpn = GetWpnFromID(w.weaponID);
 

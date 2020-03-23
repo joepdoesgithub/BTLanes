@@ -29,24 +29,18 @@ public class TacBattConsole : MonoBehaviour{
 		}
 
 		if(msg.Length > maxCharsPerLine){
-			int start = 0;
-			while(true){
-				bool final = false;
-				if(start + maxCharsPerLine >= msg.Length)
-					final = true;
-
-				string sub = "";
-				char[] a = msg.ToCharArray();
-				for(int i =start; i<start+maxCharsPerLine && i<a.Length;i++)
-					sub += a[i];
-				PostMessage(sub);
-				if(final)
-					break;
-
-				start += maxCharsPerLine;
+			string[] words = msg.Split(' ');
+			string s = "";
+			for(int i = 0;i<words.Length;i++){
+				if( (s + " " + words[i]).Length > maxCharsPerLine){
+					outputs.Add(s.Trim());
+					s = words[i];
+				}else
+					s += " " + words[i];
 			}
+			outputs.Add(s.Trim());
 		}else
-			outputs.Add(msg);
+			outputs.Add(msg.Trim());
 	}
 
     // Update is called once per frame

@@ -70,8 +70,9 @@ public static class BTDamageHelper{
 
 		if(armourRemaining > 0){
 			int dmgDone = (damage <= armourRemaining ? damage : armourRemaining);
-			s += string.Format("Took {0} to the {1} armour.",dmgDone,loc.ToString());
+			s += string.Format("Took {0} to the {1} armour",dmgDone,loc.ToString());
 			enemyUnit.DArmourPoints[loc] -= dmgDone;
+			s += (enemyUnit.DArmourPoints[loc] <= 0? ", removing all armour.": string.Format(", {0} armour remaining.",enemyUnit.DArmourPoints[loc]));
 			dmgRem -= dmgDone;
 		}
 
