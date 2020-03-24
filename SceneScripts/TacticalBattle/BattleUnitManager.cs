@@ -321,7 +321,7 @@ public class BattleUnitManager : MonoBehaviour{
 ///////////////////////////////////////////////
 	// public void ResetShooting(){heat = moveOriginalHeat; shootingHelper.Reset();}
 
-	public void FinishPhysical(){FinishShooting(selectedUnit);}
+	public void FinishPhysical(){FinishPhysical(selectedUnit);}
 	public void FinishPhysical(Unit unit){
 		GlobalFuncs.PostMessage("Doing physical for " + unit.unitName);
 		// shootingHelper.FinalizeShooting();

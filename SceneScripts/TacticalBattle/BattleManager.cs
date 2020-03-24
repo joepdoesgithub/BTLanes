@@ -39,6 +39,10 @@ public class BattleManager : MonoBehaviour{
 			InitPhysicalPhase();
 			Globals.SetBattleState(GEnums.EBattleState.PhysicalSelectNext);
 			GRefs.battleUnitManager.NextPhase(battleState);
+		}else
+		if(battleState == GEnums.EBattleState.EndPhase){
+			BTEndPhaseHelper.DoEndPhase();
+			Globals.SetBattleState(GEnums.EBattleState.MovingInit);
 		}
     }
 
@@ -89,7 +93,7 @@ public class BattleManager : MonoBehaviour{
 			else if (shootingSelectNext)
 				Globals.SetBattleState(GEnums.EBattleState.PhysicalInit);
 			else if (physicalSelectNext)
-				Globals.SetBattleState(GEnums.EBattleState.MovingInit);
+				Globals.SetBattleState(GEnums.EBattleState.EndPhase);
 		}
 	}
 
