@@ -7,7 +7,8 @@ public class TacticalBattleInputManager : MonoBehaviour{
 		battleState = Globals.GetBattleState();
 		if(GRefs.battleManager == null ||
 				(!(battleState == GEnums.EBattleState.MovingWaitingForInput ||
-				battleState == GEnums.EBattleState.ShootingWaitingForInput)) )
+				battleState == GEnums.EBattleState.ShootingWaitingForInput ||
+				battleState == GEnums.EBattleState.PhysicalWaitingForInput)) )
 			return;
 
 
@@ -44,6 +45,9 @@ public class TacticalBattleInputManager : MonoBehaviour{
 			}else if(battleState == GEnums.EBattleState.ShootingWaitingForInput){
 				GRefs.battleUnitManager.FinishShooting();
 				Globals.SetBattleState(GEnums.EBattleState.ShootingSelectNext);
+			}else if(battleState == GEnums.EBattleState.PhysicalWaitingForInput){
+				GRefs.battleUnitManager.FinishPhysical();
+				Globals.SetBattleState(GEnums.EBattleState.PhysicalSelectNext);
 			}
 		}else
 		if(Input.GetKeyDown(KeyCode.Space)){

@@ -316,6 +316,22 @@ public class BattleUnitManager : MonoBehaviour{
 
 ///////////////////////////////////////////////
 /////
+//					Physical stuff
+/////
+///////////////////////////////////////////////
+	// public void ResetShooting(){heat = moveOriginalHeat; shootingHelper.Reset();}
+
+	public void FinishPhysical(){FinishPhysical(selectedUnit);}
+	public void FinishPhysical(Unit unit){
+		GlobalFuncs.PostMessage("Doing physical for " + unit.unitName);
+		// shootingHelper.FinalizeShooting();
+		GRefs.battleManager.FinishCurrentActingUnit();
+		mechs[ GetUnitLaneNum(unit), (GetUnitTopBot(unit)?0:1) ].GetComponent<Image>().color = Globals.UnitDisplayColors[ unit.team, 1];
+		UnselectAllUnits();
+	}
+
+///////////////////////////////////////////////
+/////
 //					Other stuff
 /////
 ///////////////////////////////////////////////
