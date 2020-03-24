@@ -15,6 +15,7 @@ public class BattleManager : MonoBehaviour{
     // Update is called once per frame
     void Update(){
 		battleState = Globals.GetBattleState();
+		// Debug.Log(battleState.ToString());
 
 		movingSelectNext = (battleState == GEnums.EBattleState.MovingSelectNext);
 		shootingSelectNext = (battleState == GEnums.EBattleState.ShootingSelectNext);
@@ -26,68 +27,71 @@ public class BattleManager : MonoBehaviour{
 			InitPhase(1);
 			GRefs.battleUnitManager.NextPhase(battleState);
 			Globals.SetBattleState(GEnums.EBattleState.MovingSelectNext);
-		}else if(movingSelectNext || shootingSelectNext || physicalSelectNext){
-			bool done = true;
-
-			for(int i = 0;i<PlayerOrder.Length;i++){
-				if(PlayerOrder[i].hasActed == false){
-					if(PlayerOrder[i].unit.IsUnitDestroyed()){
-						PlayerOrder[i].hasActed = true;
-						PlayerOrder[i].isActing = false;
-						continue;
-					}
-
-					done = false;
-					PlayerOrder[i].hasActed = true;
-					PlayerOrder[i].isActing = true;
-
-					GRefs.battleUnitManager.SelectMech(PlayerOrder[i].unit);
-
-					if(PlayerOrder[i].unit.team != 0){
-						//AI turn
-						GlobalFuncs.PostMessage(string.Format("Doing AI {0} turn for " + PlayerOrder[i].unit.unitName, (movingSelectNext?"moving":"shooting") ));
-
-						if(movingSelectNext)
-							GRefs.battleUnitManager.FinishMove(PlayerOrder[i].unit);
-						else if(shootingSelectNext)
-							GRefs.battleUnitManager.FinishShooting(PlayerOrder[i].unit);
-						else{
-							jkl;
-						}
-						return;
-					}
-					if(movingSelectNext)
-						Globals.SetBattleState(GEnums.EBattleState.MovingWaitingForInput);
-					else if(shootingSelectNext)
-						Globals.SetBattleState(GEnums.EBattleState.ShootingWaitingForInput);
-					else if(physicalSelectNext)
-						Globals.SetBattleState(GEnums.EBattleState.PhysicalWaitingForInput);
-					return;
-				}
-			}
-
-			if(done){
-				GRefs.battleUnitManager.UnselectAllUnits();
-				GRefs.btUnitDisplayManager.ResetSelections(true,true);
-				if (movingSelectNext)
-					Globals.SetBattleState(GEnums.EBattleState.ShootingInit);
-				else if (shootingSelectNext)
-					Globals.SetBattleState(GEnums.EBattleState.PhysicalInit);
-				else if (physicalSelectNext)
-					Globals.SetBattleState(GEnums.EBattleState.MovingSelectNext);
-			}
-		}else if(battleState == GEnums.EBattleState.ShootingInit){
+		}else if(movingSelectNext || shootingSelectNext || physicalSelectNext)
+			DoSelectNext();
+		else 
+		if(battleState == GEnums.EBattleState.ShootingInit){
 			InitPhase(-1);
 			Globals.SetBattleState(GEnums.EBattleState.ShootingSelectNext);
 			GRefs.battleUnitManager.NextPhase(battleState);
-		}else if(battleState == GEnums.EBattleState.PhysicalInit){
+		}else 
+		if(battleState == GEnums.EBattleState.PhysicalInit){
 			InitPhysicalPhase();
 			Globals.SetBattleState(GEnums.EBattleState.PhysicalSelectNext);
 			GRefs.battleUnitManager.NextPhase(battleState);
-		}else if(battleState == GEnums.EBattleState.PhysicalSelectNext){
-			jkl;
 		}
     }
+
+	void DoSelectNext(){
+		bool done = true;
+
+		for(int i = 0;i<PlayerOrder.Length;i++){
+			if(PlayerOrder[i].hasActed == false){
+				if(PlayerOrder[i].unit.IsUnitDestroyed()){
+					PlayerOrder[i].hasActed = true;
+					PlayerOrder[i].isActing = false;
+					continue;
+				}
+
+				done = false;
+				PlayerOrder[i].hasActed = true;
+				PlayerOrder[i].isActing = true;
+
+				GRefs.battleUnitManager.SelectMech(PlayerOrder[i].unit);
+
+				if(PlayerOrder[i].unit.team != 0){
+					//AI turn
+					GlobalFuncs.PostMessage(string.Format("Doing AI {0} turn for " + PlayerOrder[i].unit.unitName, (movingSelectNext?"moving":"shooting") ));
+
+					if(movingSelectNext)
+						GRefs.battleUnitManager.FinishMove(PlayerOrder[i].unit);
+					else if(shootingSelectNext)
+						GRefs.battleUnitManager.FinishShooting(PlayerOrder[i].unit);
+					else
+						GRefs.battleUnitManager.FinishPhysical(PlayerOrder[i].unit);
+					return;
+				}
+				if(movingSelectNext)
+					Globals.SetBattleState(GEnums.EBattleState.MovingWaitingForInput);
+				else if(shootingSelectNext)
+					Globals.SetBattleState(GEnums.EBattleState.ShootingWaitingForInput);
+				else if(physicalSelectNext)
+					Globals.SetBattleState(GEnums.EBattleState.PhysicalWaitingForInput);
+				return;
+			}
+		}
+
+		if(done){
+			GRefs.battleUnitManager.UnselectAllUnits();
+			GRefs.btUnitDisplayManager.ResetSelections(true,true);
+			if (movingSelectNext)
+				Globals.SetBattleState(GEnums.EBattleState.ShootingInit);
+			else if (shootingSelectNext)
+				Globals.SetBattleState(GEnums.EBattleState.PhysicalInit);
+			else if (physicalSelectNext)
+				Globals.SetBattleState(GEnums.EBattleState.MovingInit);
+		}
+	}
 
 	void InitPhysicalPhase(){
 		List<int> newList = new List<int>();
