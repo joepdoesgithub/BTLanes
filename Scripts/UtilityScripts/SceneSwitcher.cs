@@ -30,8 +30,8 @@ public class SceneSwitcher : MonoBehaviour{
 		UnitsLoader.InitUnits(
 				new string[]{
 					// "Hunchback HBK-4G",
-					// "Stalker STK-4N"
-					"Stinger STG-3G",
+					"Stalker STK-4N",
+					// "Stinger STG-3G",
 					"Stinger STG-3G"
 				},
 				1);

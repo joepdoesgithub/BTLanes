@@ -45,7 +45,7 @@ public class BTShootingHelper{
 				int toBeHitMod = GRefs.btUnitDisplayManager.GetSelectedEnemy().toBeHitModifier;
 				int terrainMod = 0;
 				int secondTargetMod = 0;
-				int armMod = 0;
+				int armMod = (wpn.IsArmMounted() ? GGameStats.ArmMountedBonus : 0);
 
 				int targetNum = gunnery + rangeMod + toHitMod + toBeHitMod + terrainMod + secondTargetMod + armMod;
 				int roll = rnd.Next(1,7) + rnd.Next(1,7);
