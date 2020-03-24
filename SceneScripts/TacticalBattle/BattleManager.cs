@@ -67,9 +67,10 @@ public class BattleManager : MonoBehaviour{
 					//AI turn
 					GlobalFuncs.PostMessage(string.Format("Doing AI {0} turn for " + PlayerOrder[i].unit.unitName, (movingSelectNext?"moving":"shooting") ));
 
-					if(movingSelectNext)
+					if(movingSelectNext){
+						AIHelper.DoAIMove(PlayerOrder[i].ID);
 						GRefs.battleUnitManager.FinishMove(PlayerOrder[i].unit);
-					else if(shootingSelectNext)
+					}else if(shootingSelectNext)
 						GRefs.battleUnitManager.FinishShooting(PlayerOrder[i].unit);
 					else
 						GRefs.battleUnitManager.FinishPhysical(PlayerOrder[i].unit);
@@ -126,6 +127,7 @@ public class BattleManager : MonoBehaviour{
 	void InitPhase(int direction){
 		List<int> newList = new List<int>();
 		List<Unit> unitsInBattle = TacBattleData.GetAllUnitsInBattle();
+
 		int startI = (direction>0?Globals.MinPilotInitiative:Globals.MaxPilotInitiative);
 		int modder = (direction>0?1:-1);
 		for(int i = startI; i <= Globals.MaxPilotInitiative && i >= Globals.MinPilotInitiative; i += modder){
@@ -157,8 +159,9 @@ public class BattleManager : MonoBehaviour{
 
 	public struct SPlayerOrder{
 		public Unit unit;
+		public int ID;
 		public bool hasActed;
 		public bool isActing;
-		public SPlayerOrder(Unit unit){this.unit = unit;hasActed = false;isActing = false;}
+		public SPlayerOrder(Unit unit){this.unit = unit;ID = unit.ID;hasActed = false;isActing = false;}
 	}
 }
