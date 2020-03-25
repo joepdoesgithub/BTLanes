@@ -1,4 +1,4 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -24,6 +24,7 @@ public class Unit{
 	public int toHitModifier;
 	public int toBeHitModifier;
 
+	public int armourMax,structureMax;
 	public Dictionary<GEnums.EMechLocation,int> DStructucePoints;
 	public Dictionary<GEnums.EMechLocation,int> DArmourPoints;
 
@@ -36,6 +37,31 @@ public class Unit{
 	public bool IsUnitDestroyed(){
 		if(DStructucePoints[GEnums.EMechLocation.HD] <= 0 || DStructucePoints[GEnums.EMechLocation.CT] <= 0)
 			return true;
+		return false;
+	}
+
+	public int GetCurrentTotalArmour(){
+		int total = 0;
+		foreach(GEnums.EMechLocation l in Enum.GetValues(typeof(GEnums.EMechLocation)))
+			total += DArmourPoints[l];
+		return total;
+	}
+	public int GetCurrentTotalStruct(){
+		int total = 0;
+		foreach(GEnums.EMechLocation l in Enum.GetValues(typeof(GEnums.EMechLocation))){
+			if(!(l == GEnums.EMechLocation.RTC || l == GEnums.EMechLocation.RTL || l == GEnums.EMechLocation.RTR))
+				total += DStructucePoints[l];
+		}
+		return total;
+	}
+
+	public bool IsAnyPartDestroyed(){
+		foreach(GEnums.EMechLocation l in Enum.GetValues(typeof(GEnums.EMechLocation))){
+			if(!(l == GEnums.EMechLocation.RTC || l == GEnums.EMechLocation.RTL || l == GEnums.EMechLocation.RTR)){
+				if(DStructucePoints[l] <= 0)
+					return true;
+			}				
+		}
 		return false;
 	}
 }

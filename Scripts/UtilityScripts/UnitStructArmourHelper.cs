@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 public static class UnitStructArmourHelper{
 	public static void SetStructArmour(ref Unit unit, string name){
@@ -9,6 +10,13 @@ public static class UnitStructArmourHelper{
 		int tonnage = unit.tonnage;
 		LoadStructPoints(ref unit.DStructucePoints,tonnage);
 		LoadArmourPoints(ref unit.DArmourPoints,name);
+
+		unit.armourMax = unit.structureMax = 0;
+		foreach(GEnums.EMechLocation l in Enum.GetValues(typeof(GEnums.EMechLocation))){
+			unit.armourMax += unit.DArmourPoints[l];
+			if( !(l == GEnums.EMechLocation.RTC || l == GEnums.EMechLocation.RTL || l == GEnums.EMechLocation.RTR))
+				unit.structureMax += unit.DStructucePoints[l];
+		}
 
 	}
 

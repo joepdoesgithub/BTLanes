@@ -80,9 +80,12 @@ public class BTCombatPreviewTextManager : MonoBehaviour{
 			s += string.Format(" + {0} (enemy)",toBeHitMod);
 
 		// Modifier voor arm mounted
-		armMod = 0;
+		armMod = (wpn.IsArmMounted() ? GGameStats.ArmMountedBonus : 0);
 		// if(armMod != 0)
-			s += string.Format(" + {0} (arm)",armMod);
+			if(armMod < 0)
+				s += string.Format(" - {0} (arm)",-1*armMod);
+			else
+				s += string.Format(" + {0} (arm)",armMod);
 		// Intervening terrain
 		terrainMod = 0;
 		// if(terrainMod != 0)

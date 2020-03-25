@@ -114,6 +114,7 @@ public class BTMovementHelper{
 		return cnt;
 	}
 
+	public static int GetMaxToHitModifier(){return 3;}
 	public static int GetToHitModifier(bool unitStationary, bool unitRan, bool unitJumped){
 		if(unitStationary)
 			return 0;

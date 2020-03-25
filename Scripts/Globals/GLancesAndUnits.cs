@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 public static class GLancesAndUnits{
 	public static List<Unit> units = null;
@@ -11,6 +12,10 @@ public static class GLancesAndUnits{
 			if(u.ID == id)
 				return u;
 		}
+		string s = "Finding " + id.ToString() + " in: ";
+		foreach(Unit u in units)
+			s += u.ID.ToString() + ", ";
+		Debug.LogError("GLancesAndUnits.GetUnit: Can't find unit. " + s);
 		return null;
 	}
 }

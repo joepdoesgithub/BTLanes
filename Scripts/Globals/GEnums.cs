@@ -43,6 +43,11 @@ public static class GEnums{
 			else
 				return damage;
 		}
+		public bool IsArmMounted(){
+			if(loc == EMechLocation.LA || loc == EMechLocation.RA)
+				return true;
+			return false;
+		}
 	}
 	public enum EBattleState{
 		AllInit,
