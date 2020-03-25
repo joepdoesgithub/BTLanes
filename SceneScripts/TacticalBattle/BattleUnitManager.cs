@@ -384,7 +384,7 @@ public class BattleUnitManager : MonoBehaviour{
 	}
 	public int GetSelectedEnemyFacing(){return GetUnitFacing( GRefs.btUnitDisplayManager.GetSelectedEnemy() );}
 	public int GetSelectedUnitFacing(){return GetUnitFacing( selectedUnit );}
-	public int GetUnitfacing(int unitID){return GetUnitFacing( GLancesAndUnits.GetUnit(unitID) );}
+	public int GetUnitFacing(int unitID){return GetUnitFacing( GLancesAndUnits.GetUnit(unitID) );}
 	
 	public int GetSelectedUnitLaneNum(){return GetUnitLaneNum(selectedUnit);}
 	public int GetSelectedEnemyLaneNum(){

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class BattleManager : MonoBehaviour{
-	SPlayerOrder[] PlayerOrder;
-	public SPlayerOrder[] GetPlayerOrders(){return PlayerOrder;}
+	SPlayerOrder[] PlayerOrders;
+	public SPlayerOrder[] GetPlayerOrders(){return PlayerOrders;}
 
 	GEnums.EBattleState battleState;
 
@@ -49,31 +49,32 @@ public class BattleManager : MonoBehaviour{
 	void DoSelectNext(){
 		bool done = true;
 
-		for(int i = 0;i<PlayerOrder.Length;i++){
-			if(PlayerOrder[i].hasActed == false){
-				if(PlayerOrder[i].unit.IsUnitDestroyed()){
-					PlayerOrder[i].hasActed = true;
-					PlayerOrder[i].isActing = false;
+		for(int i = 0;i<PlayerOrders.Length;i++){
+			if(PlayerOrders[i].hasActed == false){
+				if(PlayerOrders[i].unit.IsUnitDestroyed()){
+					PlayerOrders[i].hasActed = true;
+					PlayerOrders[i].isActing = false;
 					continue;
 				}
 
 				done = false;
-				PlayerOrder[i].hasActed = true;
-				PlayerOrder[i].isActing = true;
+				PlayerOrders[i].hasActed = true;
+				PlayerOrders[i].isActing = true;
 
-				GRefs.battleUnitManager.SelectMech(PlayerOrder[i].unit);
+				GRefs.battleUnitManager.SelectMech(PlayerOrders[i].unit);
 
-				if(PlayerOrder[i].unit.team != 0){
+				if(PlayerOrders[i].unit.team != 0){
 					//AI turn
 					
 					if(movingSelectNext){
+						Utils.ClearLogConsole();
 						AIHelper helper = new AIHelper();
-						helper.DoAIMove(PlayerOrder[i].ID);
-						GRefs.battleUnitManager.FinishMove(PlayerOrder[i].unit);
+						helper.DoAIMove(PlayerOrders[i].ID);
+						GRefs.battleUnitManager.FinishMove(PlayerOrders[i].unit);
 					}else if(shootingSelectNext)
-						GRefs.battleUnitManager.FinishShooting(PlayerOrder[i].unit);
+						GRefs.battleUnitManager.FinishShooting(PlayerOrders[i].unit);
 					else
-						GRefs.battleUnitManager.FinishPhysical(PlayerOrder[i].unit);
+						GRefs.battleUnitManager.FinishPhysical(PlayerOrders[i].unit);
 					return;
 				}
 				if(movingSelectNext)
@@ -119,9 +120,9 @@ public class BattleManager : MonoBehaviour{
 				shortList.RemoveAt(index);
 			}
 		}
-		PlayerOrder = new SPlayerOrder[newList.Count];
+		PlayerOrders = new SPlayerOrder[newList.Count];
 		for(int i = 0;i<newList.Count;i++)
-			PlayerOrder[i] = new SPlayerOrder(GLancesAndUnits.GetUnit(newList[i]));
+			PlayerOrders[i] = new SPlayerOrder(GLancesAndUnits.GetUnit(newList[i]));
 	}
 
 	void InitPhase(int direction){
@@ -143,18 +144,26 @@ public class BattleManager : MonoBehaviour{
 				shortList.RemoveAt(index);
 			}
 		}
-		PlayerOrder = new SPlayerOrder[newList.Count];
+		PlayerOrders = new SPlayerOrder[newList.Count];
 		for(int i = 0;i<newList.Count;i++)
-			PlayerOrder[i] = new SPlayerOrder(GLancesAndUnits.GetUnit(newList[i]));
+			PlayerOrders[i] = new SPlayerOrder(GLancesAndUnits.GetUnit(newList[i]));
 	}
 
 	public void FinishCurrentActingUnit(){
-		for(int i = 0;i<PlayerOrder.Length;i++){
-			if(PlayerOrder[i].isActing){
-				PlayerOrder[i].isActing = false;
+		for(int i = 0;i<PlayerOrders.Length;i++){
+			if(PlayerOrders[i].isActing){
+				PlayerOrders[i].isActing = false;
 				return;
 			}
 		}
+	}
+
+	public bool HasUnitActed(int unitID){
+		foreach(SPlayerOrder p in PlayerOrders){
+			if(p.ID == unitID)
+				return p.hasActed;
+		}
+		return false;
 	}
 
 	public struct SPlayerOrder{

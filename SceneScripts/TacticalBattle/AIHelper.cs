@@ -19,16 +19,57 @@ public class AIHelper{
 		List<SMove> moves = GetMoves();
 		List<SLanePosition> evaluatedMoves = EvaluatePositions(moves);
 
-		float maxV = float.MinValue;
+		float maxV = 0f;
 		int ii = 0;
+		float[] weights = GetWeightsDependentOnUnitState(unitid);
+		float wSum = 0f;
+		foreach(float f in weights)
+			wSum += f;
+		if(weights.Length != evaluatedMoves[0].scores.Length || wSum != 3f)
+			Debug.LogErrorFormat("WeightSum is {0}, lengths is {2}",wSum,weights.Length);
+		string s = GLancesAndUnits.GetUnit(unitid).unitName + "\n";
 		for(int i = 0;i<evaluatedMoves.Count;i++){
-			if(evaluatedMoves[i].scores[0] > maxV){
-				maxV = evaluatedMoves[i].scores[0];
+			float avgScore = 0f;
+			for(int j = 0;j<evaluatedMoves[i].scores.Length;j++)
+				avgScore += weights[j] * evaluatedMoves[i].scores[j];
+
+			if(avgScore > maxV){
+				maxV = avgScore;
 				ii = i;
 			}
+
+			s += string.Format("|{0}{1},  {2}, {3},    {4}, {5},    {6}, {7} [{8}]|\n",
+					evaluatedMoves[i].smove.lane,
+					evaluatedMoves[i].smove.facing,
+					evaluatedMoves[i].scores[0], weights[0],
+					evaluatedMoves[i].scores[1], weights[1],
+					evaluatedMoves[i].scores[2], weights[2],
+					avgScore);
 		}
+		// Debug.Log(s);
+		// Debug.LogFormat("{0}: best is {1},{2}",GLancesAndUnits.GetUnit(unitid).unitName,
+		// 			evaluatedMoves[ii].smove.lane,
+		// 			evaluatedMoves[ii].smove.facing);
 
 		GRefs.battleUnitManager.MoveAIUnit(unitid,evaluatedMoves[ii]);
+	}
+
+	float[] GetWeightsDependentOnUnitState(int unitID){
+		Unit u = GLancesAndUnits.GetUnit(unitID);
+		int arm = u.GetCurrentTotalArmour();
+		int structure = u.GetCurrentTotalStruct();
+		int maxArm = u.armourMax;
+		int maxStruct = u.structureMax;
+		bool partDestroyed = u.IsAnyPartDestroyed();
+
+		if( (arm + structure)/((float)maxArm + maxStruct) >= 0.85f)
+			return new float[]{1.2f,0.2f,1.6f};
+		else if( (!partDestroyed) && (arm + structure)/((float)maxArm + maxStruct) >= 0.75f)
+			return new float[]{1.3f,0.4f,1.3f};
+		else if( (arm + structure)/((float)maxArm + maxStruct) < 0.5f || partDestroyed )
+			return new float[]{0.5f,2f,0.5f};
+		else
+			return new float[]{1.05f,0.9f,1.05f};
 	}
 
 	static List<SLanePosition> EvaluatePositions(List<SMove> moves){
@@ -78,7 +119,7 @@ public class AIHelper{
 		// Walking moves
 		SMove currentPos = new SMove{
 			lane = GRefs.battleUnitManager.GetUnitLaneNum(unitID),
-			facing = GRefs.battleUnitManager.GetUnitfacing(unitID),
+			facing = GRefs.battleUnitManager.GetUnitFacing(unitID),
 			lanesMoved = 0,
 			moveRemaining = GLancesAndUnits.GetUnit(unitID).walkSpeed,
 			running = false
