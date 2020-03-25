@@ -1,38 +1,39 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-static class AIHelper{
+public class AIHelper{
 	// my own state (arm remaining etc)
 	// defensive (hoeveel schade ik ga krijgen), hoe goed mijn modifier
 	// offensive score
 	// heat
 
-	static bool first = true;
-
 	static int unitID;
 
-	static int maxLaneNum;
+	int maxLaneNum;
 	
-	public static void DoAIMove(int unitid){
+	public void DoAIMove(int unitid){
 		AIHelper.unitID = unitid;
 
 		// Get list of possible moves
-		List<SMove> moves = LoseSomeMoves( GetMoves() );
-		// List<SLanePosition> evaluatedMoves = EvaluatePositions(moves);
-		if(first){
-			// first = false;
-			string s = "";
-			foreach(SMove m in moves)
-				s += string.Format("{0} {1}, lanesMoves {2} running {3}\n",m.lane,m.facing,m.lanesMoved,m.running);
-			Debug.Log(s);
+		// List<SMove> moves = LoseSomeMoves( GetMoves() );
+		List<SMove> moves = GetMoves();
+		List<SLanePosition> evaluatedMoves = EvaluatePositions(moves);
+
+		float maxV = float.MinValue;
+		int ii = 0;
+		for(int i = 0;i<evaluatedMoves.Count;i++){
+			if(evaluatedMoves[i].scores[0] > maxV){
+				maxV = evaluatedMoves[i].scores[0];
+				ii = i;
+			}
 		}
+
+		GRefs.battleUnitManager.MoveAIUnit(unitid,evaluatedMoves[ii]);
 	}
 
 	static List<SLanePosition> EvaluatePositions(List<SMove> moves){
 		List<SLanePosition> sLanePositions = new List<SLanePosition>();
 		foreach(SMove m in moves){
-			bool stationary = (m.lanesMoved == 0);
-
 			SLanePosition p = new SLanePosition{
 				toHitMod = BTMovementHelper.GetToHitModifier( (m.lanesMoved==0), m.running, false),
 				toBeHitMod = BTMovementHelper.GetToBeHitModifier(false, m.lanesMoved),
@@ -65,7 +66,7 @@ static class AIHelper{
 		return newMoves;
 	}
 
-	static List<SMove> GetMoves(){
+	List<SMove> GetMoves(){
 		maxLaneNum = GRefs.battleUnitManager.GetLaneCount() - 1;
 
 		List<SMove> moves = new List<SMove>();
@@ -103,7 +104,7 @@ static class AIHelper{
 		return moves;
 	}
 
-	static List<SMove> Deduplicate(List<SMove> Moves){
+	List<SMove> Deduplicate(List<SMove> Moves){
 		if(Moves.Count <= 1)
 			return Moves;
 
@@ -132,7 +133,7 @@ static class AIHelper{
 		return moves;
 	}
 
-	static List<SMove> NextMoves(bool running, SMove position){
+	List<SMove> NextMoves(bool running, SMove position){
 		List<SMove> moves = new List<SMove>();
 		if(position.moveRemaining <= 0){
 			moves.Add(position);

@@ -15,6 +15,7 @@ public static class GGameStats{
 			{6, 8, 4},
 			{9, 12, 5},
 			{13, int.MaxValue, 6} };
+	public static readonly int AllWeaponsMaxRange = 11;
 
 	// AI stats
 	public static float MovesLostFraction = 0.1f;

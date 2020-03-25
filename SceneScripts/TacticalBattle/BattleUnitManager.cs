@@ -75,8 +75,6 @@ public class BattleUnitManager : MonoBehaviour{
 				// Lanenum
 				bool startLeft = (team == 0 ? true : false);
 				int unitLaneNum = startLeft ? counter : lanes.Length - 1 - counter;
-				if(team == 0)
-					unitLaneNum += 7;
 				unitsPlaced++;if(unitsPlaced%2==0){counter++;}
 
 				// Facing
@@ -215,6 +213,19 @@ public class BattleUnitManager : MonoBehaviour{
 				break;
 			}
 		}
+	}
+
+	public void MoveAIUnit(int unitID, AIHelper.SLanePosition pos){
+		Unit u = GLancesAndUnits.GetUnit(unitID);
+		PlaceUnitInNewLane(unitID,pos.smove.lane,pos.smove.facing,true);
+		moveRemaining = (pos.smove.running ? -1 : 0);
+		runRemaining = u.runSpeed - pos.smove.lanesMoved;
+		lanesMoved = pos.smove.lanesMoved;
+		FinishMove(u);
+		GlobalFuncs.PostMessage(string.Format("AI: moving {0} to lane {1}, facing {2}",
+				u.unitName,
+				pos.smove.lane,
+				(pos.smove.facing < 0 ? "left" : "right")));
 	}
 
 	public void FinishMove(){FinishMove(selectedUnit);}

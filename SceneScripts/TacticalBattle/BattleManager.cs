@@ -65,10 +65,10 @@ public class BattleManager : MonoBehaviour{
 
 				if(PlayerOrder[i].unit.team != 0){
 					//AI turn
-					GlobalFuncs.PostMessage(string.Format("Doing AI {0} turn for " + PlayerOrder[i].unit.unitName, (movingSelectNext?"moving":"shooting") ));
-
+					
 					if(movingSelectNext){
-						AIHelper.DoAIMove(PlayerOrder[i].ID);
+						AIHelper helper = new AIHelper();
+						helper.DoAIMove(PlayerOrder[i].ID);
 						GRefs.battleUnitManager.FinishMove(PlayerOrder[i].unit);
 					}else if(shootingSelectNext)
 						GRefs.battleUnitManager.FinishShooting(PlayerOrder[i].unit);
