@@ -85,7 +85,7 @@ public class AIHelper{
 			sLanePositions.Add(p);
 		}
 
-		AIScoreCalculator calc = new AIScoreCalculator(unitID);
+		AIMovementScoreCalculator calc = new AIMovementScoreCalculator(unitID);
 		return calc.GetScoredMovementPositions(sLanePositions);
 	}
 
@@ -236,6 +236,22 @@ public class AIHelper{
 		moves.AddRange(NextMoves(running,standStill));
 
 		return Deduplicate(moves);
+	}
+
+	////////////////
+	//
+	//		Shooting
+	//
+	////////////////
+	public void DoAIShooting(){
+		AIShootingScoreCalculator helper = new AIShootingScoreCalculator(unitID);
+		SShootingScores[] scores = helper.GetShootingScores();
+	}
+
+	public struct SShootingScores{
+		public int enemyID;
+		public float[] scores;
+		public int[] weaponIDs;
 	}
 
 	public struct SLanePosition{
