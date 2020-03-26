@@ -77,6 +77,8 @@ public class BattleUnitManager : MonoBehaviour{
 				int unitLaneNum = startLeft ? counter : lanes.Length - 1 - counter;
 				unitsPlaced++;if(unitsPlaced%2==0){counter++;}
 
+				unitLaneNum += (team== 0? 7 : 0);
+
 				// Facing
 				int facing = (team==0?1:-1);
 

@@ -241,7 +241,7 @@ class AIMovementScoreCalculator{
 			for(int rng = 0;rng < rangeScores.Length;rng++){
 				float rngScore = 0f;
 				if(wpn.ranges[0] > 0 && rng <= wpn.ranges[0]){
-					rngScore = 1f - (wpn.ranges[0] - rng) * 0.2f;
+					rngScore = 1f - (wpn.ranges[0] - rng + 1) * 0.2f;
 					rngScore = (rngScore < 0f ? 0f : rngScore);
 				}else if(rng <= wpn.ranges[1])
 					rngScore = 1f;

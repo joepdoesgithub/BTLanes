@@ -156,8 +156,8 @@ public class BTUnitDisplayManager : MonoBehaviour{
 		while(lwpns.Count > 0){
 			float maxDmg = int.MinValue;int ii = 0;
 			for(int i = 0;i<lwpns.Count;i++){
-				if(lwpns[i].GetDamage() > maxDmg){
-					maxDmg = lwpns[i].GetDamage();
+				if(lwpns[i].GetDisplayDamage() > maxDmg){
+					maxDmg = lwpns[i].GetDisplayDamage();
 					ii = i;
 				}
 			}
@@ -187,8 +187,8 @@ public class BTUnitDisplayManager : MonoBehaviour{
 				maxLens[0] = w.weapon.name.Length;
 			if(w.weapon.heat.ToString().Length > maxLens[1])
 				maxLens[1] = w.weapon.heat.ToString().Length;
-			if(w.weapon.GetDamage().ToString().Length > maxLens[2])
-				maxLens[2] = w.weapon.GetDamage().ToString().Length;
+			if(w.weapon.GetDisplayDamage().ToString().Length > maxLens[2])
+				maxLens[2] = w.weapon.GetDisplayDamage().ToString().Length;
 			if(rangeS.Length > maxLens[3])
 				maxLens[3] = rangeS.Length;
 			if(w.weapon.loc.ToString().Length > maxLens[4])
@@ -219,7 +219,7 @@ public class BTUnitDisplayManager : MonoBehaviour{
 			}
 			s += wpns[i].weapon.name.PadRight(maxLens[0] + spacing);
 			s += wpns[i].weapon.heat.ToString().PadLeft(maxLens[1] + spacing);
-			s += wpns[i].weapon.GetDamage().ToString().PadLeft(maxLens[2] + spacing);
+			s += wpns[i].weapon.GetDisplayDamage().ToString().PadLeft(maxLens[2] + spacing);
 			string rangeS = "(";
 			rangeS += (wpns[i].weapon.ranges[0] <= 0 ? "-" : wpns[i].weapon.ranges[0].ToString());
 			rangeS += string.Format("/{0}/{1}/{2})",wpns[i].weapon.ranges[1],wpns[i].weapon.ranges[2],wpns[i].weapon.ranges[3]);

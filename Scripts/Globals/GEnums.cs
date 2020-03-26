@@ -37,10 +37,17 @@ public static class GEnums{
 
 		public int ID;
 
-		public float GetDamage(){
+		public float GetDisplayDamage(){
 			if(type == EWeaponType.MissileLRM || type == EWeaponType.MissileSRM)
 				return int.Parse(name.Split(' ')[1]) * dmgPerMissile;
 			else
+				return damage;
+		}
+		public float GetDamage(){
+			if(type == EWeaponType.MissileLRM || type == EWeaponType.MissileSRM){
+				int numMissiles = int.Parse(name.Split(' ')[1]);
+				return dmgPerMissile * GGameStats.GetAvgNumMissilesHit(numMissiles);
+			}else
 				return damage;
 		}
 		public bool IsArmMounted(){

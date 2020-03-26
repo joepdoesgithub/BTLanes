@@ -15,25 +15,30 @@ public class BTShootingHelper{
 			wpns[i] = new SWeaponToFire(unit.weapons[i].ID);
 	}
 
-	public void FinalizeShooting(){
+	public void FinalizeShooting(){ FinalizeShooting(selectedUnit.ID, wpns); }
+	public static void FinalizeShooting(int shooterID, SWeaponToFire[] wpns){
+		Unit selectedUnit = GLancesAndUnits.GetUnit(shooterID);
+
 		GlobalFuncs.PostMessage("  ");
 		GlobalFuncs.PostMessage("   " + selectedUnit.unitName + ":");
 
+		int shooterLaneNum = GRefs.battleUnitManager.GetUnitLaneNum(selectedUnit.ID);
+
 		foreach(SWeaponToFire w in wpns){
 			if(w.hasFired && w.targetID > 0){
-				GEnums.SWeapon wpn = GetWpnFromID(w.weaponID);
+				GEnums.SWeapon wpn = GLancesAndUnits.GetWeapon(w.weaponID);
 
-				int shooterLaneNum = GRefs.battleUnitManager.GetSelectedUnitLaneNum();
-				int targetLaneNum = GRefs.battleUnitManager.GetSelectedEnemyLaneNum();
+				// int targetLaneNum = GRefs.battleUnitManager.GetSelectedEnemyLaneNum();
+				int targetLaneNum = GRefs.battleUnitManager.GetUnitLaneNum(w.targetID);
 				int dist = Mathf.Abs(targetLaneNum - shooterLaneNum);
 
-				int gunnery = GRefs.battleUnitManager.GetSelectedUnit().pilot.Gunnery;
+				int gunnery = selectedUnit.pilot.Gunnery;
 
 				int rangeMod = 0;
 				if(wpn.ranges[0] > 0 && dist <= wpn.ranges[0])
 					rangeMod = (wpn.ranges[0] - dist + 1) * GGameStats.RangeModifier[0];
 				else{
-					for(int i = 0;i<4;i++){
+					for(int i = 1;i<4;i++){
 						if(dist <= wpn.ranges[i]){
 							rangeMod = GGameStats.RangeModifier[i];
 							break;
@@ -41,16 +46,18 @@ public class BTShootingHelper{
 					}
 				}
 				
-				int toHitMod = GRefs.battleUnitManager.GetSelectedUnit().toHitModifier;
-				int toBeHitMod = GRefs.btUnitDisplayManager.GetSelectedEnemy().toBeHitModifier;
+				int toHitMod = selectedUnit.toHitModifier;
+				int toBeHitMod = GLancesAndUnits.GetUnit(w.targetID).toBeHitModifier;
 				int terrainMod = 0;
 				int secondTargetMod = 0;
 				int armMod = (wpn.IsArmMounted() ? GGameStats.ArmMountedBonus : 0);
 
 				int targetNum = gunnery + rangeMod + toHitMod + toBeHitMod + terrainMod + secondTargetMod + armMod;
-				int roll = rnd.Next(1,7) + rnd.Next(1,7);
+				int roll = UnityEngine.Random.Range(1,7) + UnityEngine.Random.Range(1,7);
 
-				string s = string.Format("Firing {0} at {1}. Needs a {2}, rolled {3}.",wpn.name,GRefs.btUnitDisplayManager.GetSelectedEnemy().unitName,targetNum,roll);
+				string s = string.Format("Firing {0} at {1}. Needs a {2}, rolled {3}.",
+						wpn.name,
+						GLancesAndUnits.GetUnit(w.targetID).unitName,targetNum,roll);
 
 				if(roll < targetNum){
 					s += " Miss.";
@@ -64,11 +71,11 @@ public class BTShootingHelper{
 				string dmgString = "";
 				BTDamageHelper.ResolveDamage(
 					dist,
-					GRefs.battleUnitManager.GetSelectedUnitFacing(),
-					GRefs.battleUnitManager.GetSelectedEnemyFacing(),
+					GRefs.battleUnitManager.GetUnitFacing(selectedUnit.ID),
+					GRefs.battleUnitManager.GetUnitFacing(w.targetID),
 					w.weaponID,
 					selectedUnit.ID,
-					GRefs.btUnitDisplayManager.GetSelectedEnemyID(),
+					w.targetID,
 					out dmgString);
 				GlobalFuncs.PostMessage(dmgString);
 			}
@@ -170,7 +177,7 @@ public class BTShootingHelper{
 		
 	// }
 
-	struct SWeaponToFire{
+	public struct SWeaponToFire{
 		public int weaponID;
 		public int targetID;
 		public bool hasFired;

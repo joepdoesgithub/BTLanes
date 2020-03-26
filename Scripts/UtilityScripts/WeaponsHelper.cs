@@ -19,12 +19,11 @@ public static class WeaponsHelper{
 			wpns[i-1].loc = DMekHeaderStringToLok[ wpnStringFromUnitData.Split(',')[1].Trim() ];
 		}
 
-		List<int> ids = new List<int>();
-		System.Random rnd = new System.Random();
+		List<int> ids = GLancesAndUnits.GetAllWeaponIDs();
 		for(int i = 0;i<wpns.Length;i++){
-			int newID = rnd.Next(1000,10000);
+			int newID = UnityEngine.Random.Range(1000,10000);
 			while(ids.Contains(newID))
-				newID = rnd.Next(1000,10000);
+				newID = UnityEngine.Random.Range(1000,10000);
 			wpns[i].ID = newID;
 		}
 

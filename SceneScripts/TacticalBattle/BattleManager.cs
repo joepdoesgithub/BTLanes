@@ -67,11 +67,11 @@ public class BattleManager : MonoBehaviour{
 					//AI turn
 					
 					if(movingSelectNext){
-						// Utils.ClearLogConsole();
 						AIHelper helper = new AIHelper(PlayerOrders[i].ID);
 						helper.DoAIMove();
 						GRefs.battleUnitManager.FinishMove(PlayerOrders[i].unit);
 					}else if(shootingSelectNext){
+						Utils.ClearLogConsole();
 						AIHelper helper = new AIHelper(PlayerOrders[i].ID);
 						helper.DoAIShooting();
 						GRefs.battleUnitManager.FinishShooting(PlayerOrders[i].unit);
