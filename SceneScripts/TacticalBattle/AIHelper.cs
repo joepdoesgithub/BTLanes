@@ -7,27 +7,29 @@ public class AIHelper{
 	// offensive score
 	// heat
 
-	static int unitID;
+	int unitID;
 
 	int maxLaneNum;
-	
-	public void DoAIMove(int unitid){
-		AIHelper.unitID = unitid;
 
+	public AIHelper(int unitID){
+		this.unitID = unitID;
+	}
+	
+	public void DoAIMove(){
 		// Get list of possible moves
-		// List<SMove> moves = LoseSomeMoves( GetMoves() );
-		List<SMove> moves = GetMoves();
-		List<SLanePosition> evaluatedMoves = EvaluatePositions(moves);
+		List<SMove> moves = LoseSomeMoves( GetMoves() );
+		// List<SMove> moves = GetMoves();
+		List<SLanePosition> evaluatedMoves = EvaluateMovementsPositions(moves);
 
 		float maxV = 0f;
 		int ii = 0;
-		float[] weights = GetWeightsDependentOnUnitState(unitid);
+		float[] weights = GetMovementWeightsDependentOnUnitState();
 		float wSum = 0f;
 		foreach(float f in weights)
 			wSum += f;
 		if(weights.Length != evaluatedMoves[0].scores.Length || wSum != 3f)
 			Debug.LogErrorFormat("WeightSum is {0}, lengths is {2}",wSum,weights.Length);
-		string s = GLancesAndUnits.GetUnit(unitid).unitName + "\n";
+		string s = GLancesAndUnits.GetUnit(unitID).unitName + "\n";
 		for(int i = 0;i<evaluatedMoves.Count;i++){
 			float avgScore = 0f;
 			for(int j = 0;j<evaluatedMoves[i].scores.Length;j++)
@@ -51,10 +53,10 @@ public class AIHelper{
 		// 			evaluatedMoves[ii].smove.lane,
 		// 			evaluatedMoves[ii].smove.facing);
 
-		GRefs.battleUnitManager.MoveAIUnit(unitid,evaluatedMoves[ii]);
+		GRefs.battleUnitManager.MoveAIUnit(unitID,evaluatedMoves[ii]);
 	}
 
-	float[] GetWeightsDependentOnUnitState(int unitID){
+	float[] GetMovementWeightsDependentOnUnitState(){
 		Unit u = GLancesAndUnits.GetUnit(unitID);
 		int arm = u.GetCurrentTotalArmour();
 		int structure = u.GetCurrentTotalStruct();
@@ -72,7 +74,7 @@ public class AIHelper{
 			return new float[]{1.05f,0.9f,1.05f};
 	}
 
-	static List<SLanePosition> EvaluatePositions(List<SMove> moves){
+	List<SLanePosition> EvaluateMovementsPositions(List<SMove> moves){
 		List<SLanePosition> sLanePositions = new List<SLanePosition>();
 		foreach(SMove m in moves){
 			SLanePosition p = new SLanePosition{
@@ -84,10 +86,10 @@ public class AIHelper{
 		}
 
 		AIScoreCalculator calc = new AIScoreCalculator(unitID);
-		return calc.GetScoredPositions(sLanePositions);
+		return calc.GetScoredMovementPositions(sLanePositions);
 	}
 
-	static List<SMove> LoseSomeMoves(List<SMove> moves){
+	List<SMove> LoseSomeMoves(List<SMove> moves){
 		if(moves.Count == 1)
 			return moves;
 
@@ -106,6 +108,12 @@ public class AIHelper{
 		}
 		return newMoves;
 	}
+
+	////////////////
+	//
+	//		Get all the moves possible
+	//
+	////////////////
 
 	List<SMove> GetMoves(){
 		maxLaneNum = GRefs.battleUnitManager.GetLaneCount() - 1;
