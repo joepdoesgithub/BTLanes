@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-class AIScoreCalculator{
+class AIMovementScoreCalculator{
 	int unitID;
 	Unit unit;
 	
@@ -10,7 +10,7 @@ class AIScoreCalculator{
 	float[] enemyDamageScores;
 	int[] enemiesInLanes;
 	
-	public AIScoreCalculator(int unitID){
+	public AIMovementScoreCalculator(int unitID){
 		this.unitID = unitID;
 		unit = GLancesAndUnits.GetUnit(unitID);
 	}
@@ -66,6 +66,8 @@ class AIScoreCalculator{
 		// Debug.Log(s);
 	}
 
+	// Evaluates for a weapon if it is in range
+	// And if so, what range band and returns a weighted score
 	float GetDmgPerUnitPerLane(int lane, int enemyUnitLane, int enemyUnitFacing, GEnums.SWeapon wpn, bool enemyHasMoved){
 		if( (lane < enemyUnitLane && enemyUnitFacing > 0) ||
 				(lane > enemyUnitLane && enemyUnitFacing < 0) )
@@ -187,6 +189,7 @@ class AIScoreCalculator{
 		}
 	}
 
+	// This is used to evaluate the damage potential for a given position
 	float GetWeaponRangeScore(AIHelper.SLanePosition pos){
 		int lane = pos.smove.lane;
 		int facing = pos.smove.facing;
@@ -214,7 +217,7 @@ class AIScoreCalculator{
 	//		heat + wpnHeat <= sinking ? 1 : 0.5f
 	//		range (>=+4,.2),(+2,.6),(+0,1),
 	//		normalize to maxDmg
-	float[] GetIdealWpnRange(int unitID){
+	public static float[] GetIdealWpnRange(int unitID){
 		GEnums.SWeapon[] wpns = GLancesAndUnits.GetUnit(unitID).weapons;
 		int heat = GLancesAndUnits.GetUnit(unitID).heat;
 		int heatSinking = GLancesAndUnits.GetUnit(unitID).heatSinking;
@@ -238,7 +241,7 @@ class AIScoreCalculator{
 			for(int rng = 0;rng < rangeScores.Length;rng++){
 				float rngScore = 0f;
 				if(wpn.ranges[0] > 0 && rng <= wpn.ranges[0]){
-					rngScore = 1f - (wpn.ranges[0] - rng) * 0.2f;
+					rngScore = 1f - (wpn.ranges[0] - rng + 1) * 0.2f;
 					rngScore = (rngScore < 0f ? 0f : rngScore);
 				}else if(rng <= wpn.ranges[1])
 					rngScore = 1f;

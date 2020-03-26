@@ -18,6 +18,39 @@ public static class GLancesAndUnits{
 		Debug.LogError("GLancesAndUnits.GetUnit: Can't find unit. " + s);
 		return null;
 	}
+
+	public static List<int> GetAllWeaponIDs(){
+		List<int> l = new List<int>();
+		if(units == null || units.Count <= 0)
+			return l;
+
+		foreach(Unit u in units){
+			foreach(GEnums.SWeapon wpn in u.weapons)
+				l.Add(wpn.ID);
+		}
+		return l;
+	}
+
+	public static List<GEnums.SWeapon> GetAllWeapons(){
+		List<GEnums.SWeapon> l = new List<GEnums.SWeapon>();
+		if(units == null || units.Count <= 0)
+			return l;
+
+		foreach(Unit u in units){
+			foreach(GEnums.SWeapon wpn in u.weapons)
+				l.Add(wpn);
+		}
+		return l;
+	}
+
+
+	public static GEnums.SWeapon GetWeapon(int wpnID){
+		foreach(GEnums.SWeapon wpn in GetAllWeapons()){
+			if(wpn.ID == wpnID)
+				return wpn;
+		}
+		return new GEnums.SWeapon();
+	}
 }
 
 public class Lance{

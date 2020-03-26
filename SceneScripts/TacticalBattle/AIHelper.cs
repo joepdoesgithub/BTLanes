@@ -85,7 +85,7 @@ public class AIHelper{
 			sLanePositions.Add(p);
 		}
 
-		AIScoreCalculator calc = new AIScoreCalculator(unitID);
+		AIMovementScoreCalculator calc = new AIMovementScoreCalculator(unitID);
 		return calc.GetScoredMovementPositions(sLanePositions);
 	}
 
@@ -236,6 +236,73 @@ public class AIHelper{
 		moves.AddRange(NextMoves(running,standStill));
 
 		return Deduplicate(moves);
+	}
+
+	////////////////
+	//
+	//		Shooting
+	//
+	////////////////
+	public void DoAIShooting(){
+		// Get scores for all the enemy units
+		AIShootingScoreCalculator helper = new AIShootingScoreCalculator(unitID);
+		SShootingScores[] scores = helper.GetShootingScores();
+
+		// Print them!!
+		string s = GLancesAndUnits.GetUnit(unitID).unitName + ":\n";
+		foreach(SShootingScores sc in scores){
+			s += GLancesAndUnits.GetUnit(sc.enemyID).unitName + "," + sc.score + " ";
+			int totaldmg = 0;
+			foreach(int id in sc.weaponIDs){
+				foreach(GEnums.SWeapon wpn in GLancesAndUnits.GetUnit(unitID).weapons){
+					if(wpn.ID == id){
+						s += string.Format("{0},",wpn.name);
+						totaldmg += (int)wpn.GetDamage();
+					}
+				}
+			}
+			s += " TotalDMG: " + totaldmg + "\n";
+		}
+
+		// If more are eligible, check which to take
+		float max = float.MinValue;
+		List<SShootingScores> shortList = new List<SShootingScores>();
+		foreach(SShootingScores ss in scores){
+			if(ss.score > max){
+				max = ss.score;
+				shortList = new List<SShootingScores>();
+				shortList.Add(ss);
+			}else if(ss.score == max)
+				shortList.Add(ss);
+		}
+		s += string.Format("{0} units are on shortList\n",shortList.Count);
+		int targetID = AIShootingScoreCalculator.ShootingTargetSelection(shortList);
+		s += string.Format("Target is {0}",GLancesAndUnits.GetUnit(targetID).unitName);
+		Debug.Log(s);
+
+		// Fire the weapon
+		SShootingScores target = shortList[0];
+		if(shortList.Count > 0){
+			foreach(SShootingScores s2 in shortList)
+				target = (s2.enemyID == targetID ? s2 : target);
+		}
+
+		List<BTShootingHelper.SWeaponToFire> wpnsToFire = new List<BTShootingHelper.SWeaponToFire>();
+		foreach(int id in target.weaponIDs){
+			BTShootingHelper.SWeaponToFire tmp = new BTShootingHelper.SWeaponToFire{
+				weaponID = id,
+				targetID = target.enemyID,
+				hasFired = true
+			};
+			wpnsToFire.Add(tmp);
+		}
+		BTShootingHelper.FinalizeShooting(unitID, wpnsToFire.ToArray());
+	}
+
+	public struct SShootingScores{
+		public int enemyID;
+		public float score;
+		public int[] weaponIDs;
 	}
 
 	public struct SLanePosition{
