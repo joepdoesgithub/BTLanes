@@ -15,7 +15,7 @@ class AIScoreCalculator{
 		unit = GLancesAndUnits.GetUnit(unitID);
 	}
 
-	public List<AIHelper.SLanePosition> GetScoredPositions(List<AIHelper.SLanePosition> positions){
+	public List<AIHelper.SLanePosition> GetScoredMovementPositions(List<AIHelper.SLanePosition> positions){
 		idealWpnRange = GetIdealWpnRange(unitID);
 		FillEnemiesInLanes();
 		FillEnemyDamageScores();
